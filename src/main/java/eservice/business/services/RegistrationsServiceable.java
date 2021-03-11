@@ -23,4 +23,10 @@ public interface RegistrationsServiceable {
      * @param registration запись
      */
     void update(Registration registration);
+
+    /**
+     * Переводит в статус "Закончено"
+     * @param registration запись
+     */
+    void done(Registration registration);
 }

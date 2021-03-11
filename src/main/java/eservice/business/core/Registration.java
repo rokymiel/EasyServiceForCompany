@@ -12,6 +12,7 @@ public class Registration {
     private String typeOfWorks;
     private Integer cost;
     private Integer timeOfWorks;
+    private String status;
 
     public Registration(String id, String clientId, String carId, Date dateOfCreation, Date dateOfRegistration, String description, String typeOfWorks, Integer cost, Integer timeOfWorks) {
         Id = id;
