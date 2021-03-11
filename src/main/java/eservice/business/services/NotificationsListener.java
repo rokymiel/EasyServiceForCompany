@@ -8,5 +8,9 @@ public interface NotificationsListener {
      *
      * @param registration запись в ывтосервис
      */
-    void push(Registration registration);
+    void add(Registration registration);
+
+    void modify(Registration registration);
+
+    void remove(Registration registration);
 }

@@ -10,17 +10,4 @@ public interface RegistrationsNotifierable {
      */
     void addListener(NotificationsListener listener);
 
-    /**
-     * Одобрение записи в автосервис
-     *
-     * @param registration запись
-     */
-    void accept(Registration registration);
-
-    /**
-     * Отклонение записи в автосервис
-     *
-     * @param registration запись
-     */
-    void deny(Registration registration);
 }
