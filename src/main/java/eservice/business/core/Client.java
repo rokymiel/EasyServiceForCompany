@@ -1,8 +1,12 @@
 package eservice.business.core;
 
+import com.google.cloud.firestore.annotation.DocumentId;
+
 import java.util.List;
 
 public class Client {
+
+    @DocumentId
     private final String Id;
     private String name;
     private String surname;
@@ -18,4 +22,9 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.cars = cars;
     }
+
+    public String getId() {
+        return Id;
+    }
+
 }

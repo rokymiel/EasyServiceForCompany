@@ -15,13 +15,13 @@ public class RegistrationsNotifier implements RegistrationsNotifierable {
 
     public RegistrationsNotifier(RegistrationsServiceable registrationsService) {
         this.registrationsService = registrationsService;
-        listeners = new ArrayList<NotificationsListener>();
+        listeners = new ArrayList<>();
         reference = db.collection("registrations");
-        reference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirestoreException e) {
-                if (e != null) {
-                    return;
-                }
+        reference.addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                return;
+            }
+            if (queryDocumentSnapshots != null) {
                 registrations(queryDocumentSnapshots.getDocumentChanges());
             }
         });
@@ -34,14 +34,16 @@ public class RegistrationsNotifier implements RegistrationsNotifierable {
 
     private void registrations(List<DocumentChange> documentChanges) {
         for (DocumentChange document : documentChanges) {
+            Registration registration = document.getDocument().toObject(Registration.class);
             switch (document.getType()) {
                 case ADDED:
-                    final Registration registration = document.getDocument().toObject(Registration.class);
                     listeners.forEach(x -> x.add(registration));
                     break;
                 case REMOVED:
+                    listeners.forEach(x -> x.remove(registration));
                     break;
                 case MODIFIED:
+                    listeners.forEach(x -> x.modify(registration));
                     break;
             }
         }
