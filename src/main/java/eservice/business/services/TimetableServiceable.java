@@ -1,8 +1,9 @@
 package eservice.business.services;
 
+import com.google.cloud.Timestamp;
 import eservice.business.core.Registration;
 
-import java.util.Date;
+
 import java.util.List;
 
 public interface TimetableServiceable {
@@ -12,5 +13,5 @@ public interface TimetableServiceable {
      * @param date дата записи
      * @return список записей
      */
-    List<Registration> getRegistrationsByDate(Date date);
+    List<Registration> getRegistrationsByDate(Timestamp date);
 }
