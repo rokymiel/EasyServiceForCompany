@@ -2,7 +2,13 @@ package eservice.business.services;
 
 import eservice.business.core.Registration;
 
+import java.util.List;
+
 public interface RegistrationsServiceable {
+    List<UpdatableRegistration> getRegistrations(NotificationsListener<Registration> registrationListener);
+
+    List<String> getRegistrations();
+
     /**
      * Одобрение записи в автосервис
      *
@@ -26,7 +32,10 @@ public interface RegistrationsServiceable {
 
     /**
      * Переводит в статус "Закончено"
+     *
      * @param registration запись
      */
     void finish(Registration registration);
+
+//    List<Registration> getRegistrations();
 }
