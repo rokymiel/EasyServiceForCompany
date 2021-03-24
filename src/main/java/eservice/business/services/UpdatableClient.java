@@ -5,7 +5,6 @@ import com.google.firebase.cloud.FirestoreClient;
 import eservice.business.core.Car;
 import eservice.business.core.Client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UpdatableClient {
@@ -30,16 +29,13 @@ public class UpdatableClient {
                 switch (getStatus(documentSnapshots)) {
                     case ADDED:
                         client = documentSnapshots.toObject(Client.class);
-                        System.out.println("As");
                         listenCars();
-                        System.out.println("As");
                         clientListener.add(client);
                         break;
                     case MODIFIED:
                         Client updatedClient = documentSnapshots.toObject(Client.class);
                         updatedClient.setCars(client.getCars());
                         client = updatedClient;
-//                        if(updatedClient.get)
                         clientListener.modify(client);
                         break;
                     case REMOVED:

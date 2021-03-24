@@ -1,5 +1,6 @@
 package eservice.business.services;
 
+import eservice.business.core.Car;
 import eservice.business.core.Client;
 
 import java.util.List;
@@ -10,7 +11,9 @@ public interface ClientsServiceable {
      *
      * @return все клиенты
      */
-    List<Client> getClients();
+    List<UpdatableClient> getClients(NotificationsListener<Client> clientListener, NotificationsListener<Car> carListener);
+
+    List<String> getClientIds();
 
     /**
      * Удаляет клиента по Id
@@ -18,5 +21,6 @@ public interface ClientsServiceable {
      * @param id идентефикатор клиента
      * @return удалось ли удалить
      */
+    @Deprecated
     boolean removeClientById(String id);
 }
