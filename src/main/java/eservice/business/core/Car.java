@@ -68,4 +68,6 @@ final class CarFiled {
     public final static String GEAR = "gear";
     public final static String ENGINE_VOLUME = "engine_volume";
     public final static String PRODUCTION_YEAR = "production_year";
+    private CarFiled(){}
+
 }

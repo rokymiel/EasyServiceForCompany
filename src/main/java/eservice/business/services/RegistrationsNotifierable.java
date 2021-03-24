@@ -8,6 +8,6 @@ public interface RegistrationsNotifierable {
      *
      * @param listener слушатель
      */
-    void addListener(NotificationsListener listener);
+    void addListener(NotificationsListener<Registration> listener);
 
 }

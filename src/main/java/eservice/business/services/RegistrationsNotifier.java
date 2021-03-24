@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegistrationsNotifier implements RegistrationsNotifierable {
-    private List<NotificationsListener> listeners;
+    private List<NotificationsListener<Registration>> listeners;
     private RegistrationsServiceable registrationsService;
     private final Firestore db = FirestoreClient.getFirestore();
     private CollectionReference reference;
@@ -28,13 +28,14 @@ public class RegistrationsNotifier implements RegistrationsNotifierable {
     }
 
 
-    public void addListener(NotificationsListener listener) {
+    public void addListener(NotificationsListener<Registration> listener) {
         listeners.add(listener);
     }
 
     private void registrations(List<DocumentChange> documentChanges) {
         for (DocumentChange document : documentChanges) {
             Registration registration = document.getDocument().toObject(Registration.class);
+            System.out.println(registration);
             switch (document.getType()) {
                 case ADDED:
                     listeners.forEach(x -> x.add(registration));

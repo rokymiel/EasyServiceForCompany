@@ -1,9 +1,13 @@
 package eservice.business.core;
 
+import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Client {
 
@@ -17,7 +21,11 @@ public class Client {
     private String patronymic;
     @PropertyName(ClientFiled.PHONE_NUMBER)
     private String phoneNumber;
-    private List<Car> cars;
+    @PropertyName(ClientFiled.DATE_OF_BIRTH)
+    private Timestamp dateOfBirth;
+    private List<Car> cars = new ArrayList<>();
+    @PropertyName(ClientFiled.REGISTRATIONS)
+    private List<String> registrations;
 
     public Client(String id, String name, String surname, String patronymic,
                   String phoneNumber) {
@@ -56,27 +64,45 @@ public class Client {
     public String getPhoneNumber() {
         return phoneNumber;
     }
-    //    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public void setSurname(String surname) {
-//        this.surname = surname;
-//    }
-//
-//    public void setPatronymic(String patronymic) {
-//        this.patronymic = patronymic;
-//    }
-//
-//    public void setPhoneNumber(String phoneNumber) {
-//        this.phoneNumber = phoneNumber;
-//    }
 
-//    public void setCars(List<Car> cars) {
+    @PropertyName(ClientFiled.DATE_OF_BIRTH)
+    public Timestamp getDateOfBirth() {
+        return dateOfBirth;
+    }
 
+    public List<String> getRegistrations() {
+        return registrations;
+    }
+
+//    @PropertyName(ClientFiled.REGISTRATIONS)
+//    public void setRegistrationsFromReference(List<DocumentReference> documentReference) {
+//        System.out.println("AAAA");
+//        for (DocumentReference document : documentReference) {
+//            document.get().addListener();
+//        }
+//        this.registrations = null;
+//    }
 
     public List<Car> getCars() {
         return cars;
+    }
+
+    public Car getCar(int index) {
+        return cars.get(index);
+    }
+
+    public void addCar(Car car) {
+        cars.add(car);
+    }
+
+    public void updateCar(Car car) {
+        cars.stream()
+                .filter(x -> x.getId().equals(car.getId()))
+                .findFirst().ifPresent(value -> cars.set(cars.indexOf(value), car));
+    }
+
+    public void removeCar(String id) {
+        cars.removeIf(x -> x.getId().equals(id));
     }
 
     public void setCars(List<Car> cars) {
@@ -91,7 +117,9 @@ public class Client {
                 ", surname='" + surname + '\'' +
                 ", patronymic='" + patronymic + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
                 ", cars=" + cars +
+                ", registrations=" + registrations +
                 '}';
     }
 
@@ -105,4 +133,10 @@ final class ClientFiled {
     public final static String SURNAME = "surname";
     public final static String PATRONYMIC = "patronymic";
     public final static String PHONE_NUMBER = "phone_number";
+    public final static String DATE_OF_BIRTH = "date_of_birth";
+    public final static String REGISTRATIONS = "registrations";
+
+    private ClientFiled() {
+    }
+
 }
