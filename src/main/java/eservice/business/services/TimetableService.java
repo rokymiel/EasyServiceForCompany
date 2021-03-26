@@ -15,7 +15,7 @@ public class TimetableService implements TimetableServiceable {
     private final Map<String, Registration> registrationMap = new HashMap<>();
 
     public TimetableService(RegistrationsNotifierable notifier) {
-        notifier.addListener(new NotificationsListener() {
+        notifier.addListener(new NotificationsListener<>() {
             @Override
             public void add(Registration registration) {
                 registrationMap.put(registration.getId(), registration);
