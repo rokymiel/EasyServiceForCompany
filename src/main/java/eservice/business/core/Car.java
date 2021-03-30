@@ -49,6 +49,19 @@ public class Car {
     public Car() {
     }
 
+    private Car(String id, String mark, String model, String gear, Double engineVolume, Integer productionYear) {
+        this.id = id;
+        this.mark = mark;
+        this.model = model;
+        this.gear = gear;
+        this.engineVolume = engineVolume;
+        this.productionYear = productionYear;
+    }
+
+    public String getCarName() {
+        return getMark() + " " + getModel();
+    }
+
     @Override
     public String toString() {
         return "Car{" +
@@ -60,6 +73,11 @@ public class Car {
                 ", productionYear=" + productionYear +
                 '}';
     }
+
+    @Override
+    public Object clone() {
+        return new Car(id, mark, model, gear, engineVolume, productionYear);
+    }
 }
 
 final class CarFiled {
@@ -68,6 +86,8 @@ final class CarFiled {
     public final static String GEAR = "gear";
     public final static String ENGINE_VOLUME = "engine_volume";
     public final static String PRODUCTION_YEAR = "production_year";
-    private CarFiled(){}
+
+    private CarFiled() {
+    }
 
 }

@@ -57,4 +57,8 @@ public class ClientsService implements ClientsServiceable {
     public boolean removeClientById(String id) {
         return false;
     }
+
+    public void getCarById(String ID) {
+
+    }
 }

@@ -7,6 +7,7 @@ import com.google.cloud.firestore.annotation.PropertyName;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Registration {
     @DocumentId
@@ -31,10 +32,32 @@ public class Registration {
     private String status;
     @PropertyName(RegistrationFiled.NOTES)
     private String notes;
+    @Exclude
+    private Client client;
 
-    private final Map<String, Object> changesFields = new HashMap<>();
+
+    private final Map<String, Object> changesFields;
 
     public Registration() {
+        changesFields = new HashMap<>();
+    }
+
+    private Registration(String id, String clientId, String carId, Timestamp dateOfCreation,
+                         Timestamp dateOfRegistration, String description, String typeOfWorks,
+                         Double cost, Integer timeOfWorks, String status, String notes, Client client, Map<String, Object> changesFields) {
+        this.id = id;
+        this.clientId = clientId;
+        this.carId = carId;
+        this.dateOfCreation = dateOfCreation;
+        this.dateOfRegistration = dateOfRegistration;
+        this.description = description;
+        this.typeOfWorks = typeOfWorks;
+        this.cost = cost;
+        this.timeOfWorks = timeOfWorks;
+        this.status = status;
+        this.notes = notes;
+        this.client = client;
+        this.changesFields = changesFields;
     }
 
     public Registration(String id, String clientId, String carId, Timestamp dateOfCreation, Timestamp dateOfRegistration, String description, String typeOfWorks, Double cost, Integer timeOfWorks, String status, String notes) {
@@ -49,6 +72,7 @@ public class Registration {
         this.timeOfWorks = timeOfWorks;
         this.status = status;
         this.notes = notes;
+        changesFields = new HashMap<>();
     }
 
     public String getId() {
@@ -74,6 +98,7 @@ public class Registration {
     public Timestamp getDateOfRegistration() {
         return dateOfRegistration;
     }
+
     @Exclude()
     public void setDateOfRegistration(Timestamp dateOfRegistration) {
         this.dateOfRegistration = dateOfRegistration;
@@ -84,6 +109,7 @@ public class Registration {
     public String getDescription() {
         return description;
     }
+
     @Exclude()
     public void setDescription(String description) {
         this.description = description;
@@ -94,6 +120,7 @@ public class Registration {
     public String getTypeOfWorks() {
         return typeOfWorks;
     }
+
     @Exclude()
     public void setTypeOfWorks(String typeOfWorks) {
         this.typeOfWorks = typeOfWorks;
@@ -104,6 +131,7 @@ public class Registration {
     public Double getCost() {
         return cost;
     }
+
     @Exclude()
     public void setCost(Double cost) {
         this.cost = cost;
@@ -114,6 +142,7 @@ public class Registration {
     public Integer getTimeOfWorks() {
         return timeOfWorks;
     }
+
     @Exclude()
     public void setTimeOfWorks(Integer timeOfWorks) {
         this.timeOfWorks = timeOfWorks;
@@ -124,6 +153,7 @@ public class Registration {
     public String getStatus() {
         return status;
     }
+
     @Exclude()
     public void setStatus(String status) {
         this.status = status;
@@ -137,6 +167,14 @@ public class Registration {
 
     public Map<String, Object> getChangesFields() {
         return changesFields;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     @Override
@@ -155,6 +193,36 @@ public class Registration {
                 ", notes='" + notes + '\'' +
                 ", changesFields=" + changesFields +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Registration that = (Registration) o;
+        return Objects.equals(getId(), that.getId()) &&
+                Objects.equals(getClientId(), that.getClientId()) &&
+                Objects.equals(getCarId(), that.getCarId()) &&
+                Objects.equals(getDateOfCreation(), that.getDateOfCreation()) &&
+                Objects.equals(getDateOfRegistration(), that.getDateOfRegistration()) &&
+                Objects.equals(getDescription(), that.getDescription()) &&
+                Objects.equals(getTypeOfWorks(), that.getTypeOfWorks()) &&
+                Objects.equals(getCost(), that.getCost()) &&
+                Objects.equals(getTimeOfWorks(), that.getTimeOfWorks()) &&
+                Objects.equals(getStatus(), that.getStatus()) &&
+                Objects.equals(getNotes(), that.getNotes()) &&
+                Objects.equals(getClient(), that.getClient());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getClientId(), getCarId(), getDateOfCreation(), getDateOfRegistration(), getDescription(), getTypeOfWorks(), getCost(), getTimeOfWorks(), getStatus(), getNotes(), getClient());
+    }
+
+    @Override
+    public Object clone() {
+        return new Registration(id, clientId, carId, dateOfCreation, dateOfRegistration,
+                description, typeOfWorks, cost, timeOfWorks, status, notes, client, changesFields);
     }
 }
 

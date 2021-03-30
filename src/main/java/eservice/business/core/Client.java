@@ -37,6 +37,17 @@ public class Client {
 //        this.cars = cars;
     }
 
+    private Client(String id, String name, String surname, String patronymic, String phoneNumber, Timestamp dateOfBirth, List<Car> cars, List<String> registrations) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.patronymic = patronymic;
+        this.phoneNumber = phoneNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.cars = cars;
+        this.registrations = registrations;
+    }
+
     public Client() {
 
     }
@@ -87,8 +98,8 @@ public class Client {
         return cars;
     }
 
-    public Car getCar(int index) {
-        return cars.get(index);
+    public Car getCar(String id) {
+        return cars.stream().filter(x -> x.getId().equals(id)).findFirst().get();
     }
 
     public void addCar(Car car) {
@@ -123,7 +134,19 @@ public class Client {
                 '}';
     }
 
-//        this.cars = cars;
+    public String getFullName() {
+        List<String> fullName = new ArrayList<>(List.of(getSurname(), getName()));
+        if (getPatronymic() != null && !getPatronymic().isBlank()) {
+            fullName.add(getPatronymic());
+        }
+        return String.join(" ", fullName);
+    }
+
+    @Override
+    public Object clone() {
+        return new Client(id, name, surname, patronymic, phoneNumber, dateOfBirth, cars, registrations);
+    }
+    //        this.cars = cars;
 //    }
 
 }
