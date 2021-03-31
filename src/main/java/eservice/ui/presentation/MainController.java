@@ -92,15 +92,15 @@ public class MainController {
             return cell;
         });
 
-        allRegistrationsTable.setRowFactory( tv -> {
+        allRegistrationsTable.setRowFactory(tv -> {
             TableRow<UpdatableRegistration> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     UpdatableRegistration rowData = row.getItem();
                     registrationTapped(rowData);
                 }
             });
-            return row ;
+            return row;
         });
 
         setColumn(dateColumn, x -> String.valueOf(x.getDateOfRegistration()));
@@ -155,15 +155,19 @@ public class MainController {
     private void registrationTapped(UpdatableRegistration registration) {
         Parent root;
         try {
-            root = FXMLLoader.load(getClass().getResource("/RegistrationPage.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/RegistrationPage.fxml"));
+
+            root = loader.load();
+
+            RegistrationController controller = loader.<RegistrationController>getController();
+            controller.set(registration);
             Stage stage = new Stage();
             stage.setTitle("My New Stage Title");
             stage.setScene(new Scene(root, 450, 450));
             stage.show();
             // Hide this current window (if this is what you want)
 //            ((Node)(event.getSource())).getScene().getWindow().hide();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
