@@ -24,12 +24,17 @@ import javafx.stage.Stage;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 public class MainController {
+
+    String pattern = "dd.MM.yyyy HH:mm";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
     @FXML
     TableView<UpdatableRegistration> newRegistrationsTable;
     @FXML
@@ -103,7 +108,7 @@ public class MainController {
             return row;
         });
 
-        setColumn(dateColumn, x -> String.valueOf(x.getDateOfRegistration()));
+        setColumn(dateColumn, x -> simpleDateFormat.format(x.getDateOfRegistration().toDate()));
         setColumn(statusColumn, Registration::getStatus);
         setColumn(carColumn, x -> {
             if (x.getClient() != null) {
@@ -115,7 +120,7 @@ public class MainController {
             return "";
         });
         setColumn(typeOfWorksColumn, Registration::getTypeOfWorks);
-        setColumn(timeOfWorksColumn, x -> String.valueOf(x.getTimeOfWorks()));
+        setColumn(timeOfWorksColumn, x -> x.getTimeOfWorks() != null ? simpleDateFormat.format(x.getTimeOfWorks().toDate()) : "");
         setColumn(clientNameColumn, x -> x.getClient() != null ? x.getClient().getFullName() : "");
         setColumn(phoneColumn, x -> x.getClient() != null ? x.getClient().getPhoneNumber() : "");
         allRegistrationsTable.setItems(registrations);
@@ -173,7 +178,7 @@ public class MainController {
             controller.set(registration);
             Stage stage = new Stage();
             stage.setTitle("My New Stage Title");
-            stage.setScene(new Scene(root, 450, 450));
+            stage.setScene(new Scene(root, 900, 450));
             stage.show();
             // Hide this current window (if this is what you want)
 //            ((Node)(event.getSource())).getScene().getWindow().hide();

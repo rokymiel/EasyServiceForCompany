@@ -100,6 +100,16 @@ public class RegistrationController implements ChangeListener<Registration> {
     private void setFields(Registration registration) {
         costField.setText(String.valueOf(registration.getCost()));
         datePicker.setValue(registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        int hour = registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().getHour();
+        int minute = registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().getMinute();
+        System.out.println(hour);
+        System.out.println(minute);
+        System.out.println(registration.getDateOfRegistration());
+        System.out.println(registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+        hourBox.getSelectionModel().select(hour - 8);
+        minutesBox.getSelectionModel().select(minute);
+
+
         if (registration.getTimeOfWorks() != null) {
             endDatePicker.setValue(registration.getTimeOfWorks().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }
