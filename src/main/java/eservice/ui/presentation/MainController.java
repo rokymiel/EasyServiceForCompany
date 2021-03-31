@@ -13,14 +13,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
+import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -89,6 +92,17 @@ public class MainController {
             return cell;
         });
 
+        allRegistrationsTable.setRowFactory( tv -> {
+            TableRow<UpdatableRegistration> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    UpdatableRegistration rowData = row.getItem();
+                    registrationTapped(rowData);
+                }
+            });
+            return row ;
+        });
+
         setColumn(dateColumn, x -> String.valueOf(x.getDateOfRegistration()));
         setColumn(statusColumn, Registration::getStatus);
         setColumn(carColumn, x -> x.getClient() != null ? x.getClient().getCar(x.getCarId()).getCarName() : "");
@@ -136,6 +150,22 @@ public class MainController {
 
 
         return gridpane;
+    }
+
+    private void registrationTapped(UpdatableRegistration registration) {
+        Parent root;
+        try {
+            root = FXMLLoader.load(getClass().getResource("/RegistrationPage.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("My New Stage Title");
+            stage.setScene(new Scene(root, 450, 450));
+            stage.show();
+            // Hide this current window (if this is what you want)
+//            ((Node)(event.getSource())).getScene().getWindow().hide();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
