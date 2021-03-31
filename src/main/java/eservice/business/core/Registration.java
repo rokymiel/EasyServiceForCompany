@@ -27,7 +27,7 @@ public class Registration {
     @PropertyName(RegistrationFiled.COST)
     private Double cost;
     @PropertyName(RegistrationFiled.TIME_OF_WORKS)
-    private Integer timeOfWorks;
+    private Timestamp timeOfWorks;
     @PropertyName(RegistrationFiled.STATUS)
     private String status;
     @PropertyName(RegistrationFiled.NOTES)
@@ -44,7 +44,7 @@ public class Registration {
 
     private Registration(String id, String clientId, String carId, Timestamp dateOfCreation,
                          Timestamp dateOfRegistration, String description, String typeOfWorks,
-                         Double cost, Integer timeOfWorks, String status, String notes, Client client, Map<String, Object> changesFields) {
+                         Double cost, Timestamp timeOfWorks, String status, String notes, Client client, Map<String, Object> changesFields) {
         this.id = id;
         this.clientId = clientId;
         this.carId = carId;
@@ -60,7 +60,7 @@ public class Registration {
         this.changesFields = changesFields;
     }
 
-    public Registration(String id, String clientId, String carId, Timestamp dateOfCreation, Timestamp dateOfRegistration, String description, String typeOfWorks, Double cost, Integer timeOfWorks, String status, String notes) {
+    public Registration(String id, String clientId, String carId, Timestamp dateOfCreation, Timestamp dateOfRegistration, String description, String typeOfWorks, Double cost, Timestamp timeOfWorks, String status, String notes) {
         this.id = id;
         this.clientId = clientId;
         this.carId = carId;
@@ -139,12 +139,12 @@ public class Registration {
     }
 
     @PropertyName(RegistrationFiled.TIME_OF_WORKS)
-    public Integer getTimeOfWorks() {
+    public Timestamp getTimeOfWorks() {
         return timeOfWorks;
     }
 
     @Exclude()
-    public void setTimeOfWorks(Integer timeOfWorks) {
+    public void setTimeOfWorks(Timestamp timeOfWorks) {
         this.timeOfWorks = timeOfWorks;
         changesFields.put(RegistrationFiled.TIME_OF_WORKS, timeOfWorks);
     }

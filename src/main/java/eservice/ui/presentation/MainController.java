@@ -105,7 +105,15 @@ public class MainController {
 
         setColumn(dateColumn, x -> String.valueOf(x.getDateOfRegistration()));
         setColumn(statusColumn, Registration::getStatus);
-        setColumn(carColumn, x -> x.getClient() != null ? x.getClient().getCar(x.getCarId()).getCarName() : "");
+        setColumn(carColumn, x -> {
+            if (x.getClient() != null) {
+                Car car = x.getClient().getCar(x.getCarId());
+                if (car != null) {
+                    return car.getCarName();
+                }
+            }
+            return "";
+        });
         setColumn(typeOfWorksColumn, Registration::getTypeOfWorks);
         setColumn(timeOfWorksColumn, x -> String.valueOf(x.getTimeOfWorks()));
         setColumn(clientNameColumn, x -> x.getClient() != null ? x.getClient().getFullName() : "");
@@ -143,7 +151,9 @@ public class MainController {
         Client client = registration.getClient();
         if (client != null) {
             Car car = client.getCar(registration.getCarId());
-            gridpane.add(new Label(car.getCarName()), 1, 0);   // столбец=1 строка=0
+            if (car != null) {
+                gridpane.add(new Label(car.getCarName()), 1, 0);
+            }
             gridpane.add(new Label(registration.getTypeOfWorks()), 1, 1);    // столбец=2 строка=0
             gridpane.add(new Label(registration.getDateOfRegistration().toString()), 1, 2);   // столбец=1 строка=0
         }

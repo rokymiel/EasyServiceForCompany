@@ -43,10 +43,10 @@ public class UpdatableRegistration {
                         Registration reg = documentSnapshots.toObject(Registration.class);
                         if (reg.getClientId() != null) {
                             System.out.println(reg.getClientId());
-                            client = new UpdatableClient(reg.getClientId(), (observableValue, client, t1) -> {
+                            client = new UpdatableClient(reg.getClientId(), (observableValue, client, newClient) -> {
                                 Registration re = (Registration) registration.getValue().clone();
                                 System.out.println("AAAAAASDADASD");
-                                re.setClient(client);
+                                re.setClient(newClient);
                                 registration.set(re);
                             });
                         }

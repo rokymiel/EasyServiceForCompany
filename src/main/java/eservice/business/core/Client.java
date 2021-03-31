@@ -99,7 +99,8 @@ public class Client {
     }
 
     public Car getCar(String id) {
-        return cars.stream().filter(x -> x.getId().equals(id)).findFirst().get();
+        var car = cars.stream().filter(x -> x.getId().equals(id)).findFirst();
+        return car.orElse(null);
     }
 
     public void addCar(Car car) {

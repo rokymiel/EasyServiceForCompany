@@ -43,6 +43,7 @@ public class UpdatableClient {
                     case MODIFIED:
                         Client updatedClient = documentSnapshots.toObject(Client.class);
                         updatedClient.setCars(client.getValue().getCars());
+                        System.out.println(updatedClient);
                         client.set(updatedClient);
                         this.clientListener.ifPresent(x -> x.modify(client.getValue()));
                         break;
