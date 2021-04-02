@@ -31,6 +31,36 @@ public class StatusService {
         return null;
     }
 
+    public String getNextStatus(String status) {
+        switch (status) {
+            case "new":
+                return "accepted";
+            case "accepted":
+                return "in_progress";
+            case "in_progress":
+                return "completed";
+        }
+        return null;
+    }
+
+    public String getPreviousStatus(String status) {
+        if ("accepted".equals(status)) {
+            return "new";
+        }
+        return null;
+    }
+
+    public String getCancellationStatus(String status) {
+        switch (status) {
+            case "new":
+                return "denied";
+            case "accepted":
+            case "in_progress":
+                return "canceled";
+        }
+        return null;
+    }
+
     public String getCurrent(String status) {
         switch (status) {
             case "denied":

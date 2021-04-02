@@ -147,17 +147,17 @@
                                                 <Insets right="5.0" />
                                              </HBox.margin>
                                           </TextField>
-                                          <Button fx:id="nextButton" focusTraversable="false" mnemonicParsing="false" visible="false">
+                                          <Button fx:id="nextButton" focusTraversable="false" mnemonicParsing="false" onAction="#onNextClicked" visible="false">
                                              <HBox.margin>
                                                 <Insets left="5.0" right="5.0" />
                                              </HBox.margin>
                                           </Button>
-                                          <Button fx:id="cancelButton" focusTraversable="false" mnemonicParsing="false" visible="false">
+                                          <Button fx:id="cancelButton" focusTraversable="false" mnemonicParsing="false" onAction="#onCancelClicked" visible="false">
                                              <HBox.margin>
                                                 <Insets left="5.0" right="5.0" />
                                              </HBox.margin>
                                           </Button>
-                                          <Button fx:id="backButton" focusTraversable="false" mnemonicParsing="false" visible="false">
+                                          <Button fx:id="backButton" focusTraversable="false" mnemonicParsing="false" onAction="#onPreviousClicked" visible="false">
                                              <HBox.margin>
                                                 <Insets left="5.0" />
                                              </HBox.margin>

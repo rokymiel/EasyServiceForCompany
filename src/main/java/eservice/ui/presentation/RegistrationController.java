@@ -109,6 +109,7 @@ public class RegistrationController implements ChangeListener<Registration> {
     private void setFields(Registration registration) {
         costField.setText(String.valueOf(registration.getCost()));
         setStatus(registration.getStatus());
+
         datePicker.valueProperty().addListener(this::registrationDateChanged);
         datePicker.setValue(registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         int hour = registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().getHour();
@@ -171,7 +172,10 @@ public class RegistrationController implements ChangeListener<Registration> {
         });
     }
 
+    private String status;
+
     private void setStatus(String status) {
+        this.status = status;
         nextButton.setVisible(false);
         cancelButton.setVisible(false);
         backButton.setVisible(false);
@@ -194,6 +198,21 @@ public class RegistrationController implements ChangeListener<Registration> {
             backButton.setText(back);
         }
 
+    }
+
+    @FXML
+    public void onNextClicked() {
+        setStatus(statusService.getNextStatus(status));
+    }
+
+    @FXML
+    public void onPreviousClicked() {
+        setStatus(statusService.getPreviousStatus(status));
+    }
+
+    @FXML
+    public void onCancelClicked() {
+        setStatus(statusService.getCancellationStatus(status));
     }
 
     private void endRegistrationDateChanged(ObservableValue<? extends LocalDate> observableValue, LocalDate oldDate, LocalDate newDate) {
