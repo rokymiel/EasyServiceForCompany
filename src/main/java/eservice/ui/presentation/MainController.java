@@ -158,7 +158,7 @@ public class MainController {
                 gridpane.add(new Label(car.getCarName()), 1, 0);
             }
             gridpane.add(new Label(registration.getTypeOfWorks()), 1, 1);    // столбец=2 строка=0
-            gridpane.add(new Label(registration.getDateOfRegistration().toString()), 1, 2);   // столбец=1 строка=0
+            gridpane.add(new Label(simpleDateFormat.format(registration.getDateOfRegistration().toDate())), 1, 2);   // столбец=1 строка=0
         }
 
 
