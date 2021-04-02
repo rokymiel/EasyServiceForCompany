@@ -3,6 +3,7 @@ package eservice.ui.presentation;
 import eservice.business.core.Car;
 import eservice.business.core.Client;
 import eservice.business.core.Registration;
+import eservice.business.services.StatusService;
 import eservice.business.services.UpdatableRegistration;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -34,6 +35,14 @@ public class RegistrationController implements ChangeListener<Registration> {
     @FXML
     private ComboBox<String> minutesBox;
     @FXML
+    private TextField statusField;
+    @FXML
+    private Button nextButton;
+    @FXML
+    private Button cancelButton;
+    @FXML
+    private Button backButton;
+    @FXML
     private DatePicker endDatePicker;
     @FXML
     private ComboBox<String> endHourBox;
@@ -62,6 +71,8 @@ public class RegistrationController implements ChangeListener<Registration> {
     private TextField gearField;
     @FXML
     private TextField engineVolumeField;
+
+    private final StatusService statusService = new StatusService();
 
     public void set(UpdatableRegistration updatableRegistration) {
         this.updatableRegistration = updatableRegistration;
@@ -97,6 +108,7 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     private void setFields(Registration registration) {
         costField.setText(String.valueOf(registration.getCost()));
+        setStatus(registration.getStatus());
         datePicker.valueProperty().addListener(this::registrationDateChanged);
         datePicker.setValue(registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         int hour = registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().getHour();
@@ -159,13 +171,37 @@ public class RegistrationController implements ChangeListener<Registration> {
         });
     }
 
+    private void setStatus(String status) {
+        nextButton.setVisible(false);
+        cancelButton.setVisible(false);
+        backButton.setVisible(false);
+        statusField.setText(statusService.getCurrent(status));
+
+        String next = statusService.getNext(status);
+        String cancellation = statusService.getCancellation(status);
+        String back = statusService.getPrevious(status);
+
+        if (next != null) {
+            nextButton.setVisible(true);
+            nextButton.setText(next);
+        }
+        if (cancellation != null) {
+            cancelButton.setVisible(true);
+            cancelButton.setText(cancellation);
+        }
+        if (back != null) {
+            backButton.setVisible(true);
+            backButton.setText(back);
+        }
+
+    }
+
     private void endRegistrationDateChanged(ObservableValue<? extends LocalDate> observableValue, LocalDate oldDate, LocalDate newDate) {
         if (endHourBox.getSelectionModel().getSelectedIndex() < 0 || endMinutesBox.getSelectionModel().getSelectedIndex() < 0) {
             endHourBox.getSelectionModel().select(hourBox.getSelectionModel().getSelectedIndex());
             endMinutesBox.getSelectionModel().select(minutesBox.getSelectionModel().getSelectedIndex());
             return;
         }
-        // TODO ...
         if (Objects.equals(newDate, datePicker.getValue())) {
             if (endHourBox.getSelectionModel().getSelectedIndex() < hourBox.getSelectionModel().getSelectedIndex()) {
                 endHourBox.getSelectionModel().select(hourBox.getSelectionModel().getSelectedIndex());
