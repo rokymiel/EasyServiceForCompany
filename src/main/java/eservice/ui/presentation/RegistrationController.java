@@ -107,7 +107,7 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private void setFields(Registration registration) {
-        costField.setText(String.valueOf(registration.getCost()));
+        costField.setText(registration.getCost() == null ? "" : String.valueOf(registration.getCost()));
         setStatus(registration.getStatus());
 
         datePicker.valueProperty().addListener(this::registrationDateChanged);
