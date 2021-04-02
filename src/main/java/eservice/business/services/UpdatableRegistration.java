@@ -58,9 +58,9 @@ public class UpdatableRegistration {
                         break;
                     case MODIFIED:
                         Registration updatedRegistration = documentSnapshots.toObject(Registration.class);
+                        updatedRegistration.setClient(registration.getValue().getClient());
 //                        registration.set(updatedRegistration);
 //                        registration.getValue().setSas("Asa");
-                        System.out.println("MEM");
 //                        registration.getValue().setDescription("SEEX");
                         registration.set(updatedRegistration);
 //                        registration.set(registration.getValue());

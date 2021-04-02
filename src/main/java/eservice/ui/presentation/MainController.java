@@ -9,6 +9,8 @@ import eservice.business.services.UpdatableRegistration;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -67,17 +69,28 @@ public class MainController {
             @Override
             public void add(String item) {
                 System.out.println("AddListItem");
-                registrations.add(new UpdatableRegistration(item, new NotificationsListener<Registration>() {
+                registrations.add(new UpdatableRegistration(item, new NotificationsListener<>() {
                     @Override
                     public void add(Object sender, Registration item) {
                         UpdatableRegistration up = (UpdatableRegistration) sender;
                         if (Objects.equals(up.getRegistration().getStatus(), "new")) {
                             newRegistrations.add(up);
+                            up.getValue().addListener((observableValue, registration, newRegistration) -> {
+                                synchronized (this) {
+                                    if (!registration.getStatus().equals("new") && newRegistration.getStatus().equals("new")) {
+                                        newRegistrations.add(up);
+                                    } else if (registration.getStatus().equals("new") && !newRegistration.getStatus().equals("new")) {
+                                        newRegistrations.remove(up);
+                                    }
+                                }
+                            });
                         }
                     }
                 }));
+
             }
         });
+
         newRegistrationsColumn.setCellValueFactory(cellData -> cellData.getValue().getValue());
 
         newRegistrationsTable.setItems(newRegistrations);
