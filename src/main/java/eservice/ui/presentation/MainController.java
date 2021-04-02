@@ -22,12 +22,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 public class MainController {

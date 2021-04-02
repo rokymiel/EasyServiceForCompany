@@ -4,20 +4,19 @@ import eservice.business.core.Car;
 import eservice.business.core.Client;
 import eservice.business.core.Registration;
 import eservice.business.services.UpdatableRegistration;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -40,8 +39,7 @@ public class RegistrationController implements ChangeListener<Registration> {
     private ComboBox<String> endHourBox;
     @FXML
     private ComboBox<String> endMinutesBox;
-    @FXML
-    private ComboBox<String> statusBox;
+
     @FXML
     private TextArea notesArea;
 
@@ -99,6 +97,7 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     private void setFields(Registration registration) {
         costField.setText(String.valueOf(registration.getCost()));
+        datePicker.valueProperty().addListener(this::registrationDateChanged);
         datePicker.setValue(registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         int hour = registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().getHour();
         int minute = registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().getMinute();
@@ -106,13 +105,20 @@ public class RegistrationController implements ChangeListener<Registration> {
         System.out.println(minute);
         System.out.println(registration.getDateOfRegistration());
         System.out.println(registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
+
+        hourBox.valueProperty().addListener(this::registrationHourChanged);
+        minutesBox.valueProperty().addListener(this::registrationMinuteChanged);
         hourBox.getSelectionModel().select(hour - 8);
         minutesBox.getSelectionModel().select(minute);
 
-
+        endDatePicker.valueProperty().addListener(this::endRegistrationDateChanged);
         if (registration.getTimeOfWorks() != null) {
             endDatePicker.setValue(registration.getTimeOfWorks().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }
+
+        endHourBox.valueProperty().addListener(this::endRegistrationHourChanged);
+        endMinutesBox.valueProperty().addListener(this::endRegistrationMinuteChanged);
+
         notesArea.setText(registration.getNotes());
         Client client = registration.getClient();
         if (client != null) {
@@ -132,6 +138,106 @@ public class RegistrationController implements ChangeListener<Registration> {
 
         }
     }
+
+    private void registrationDateChanged(ObservableValue<? extends LocalDate> observableValue, LocalDate oldDate, LocalDate newDate) {
+        System.out.println("AA");
+        if (newDate == null) {
+            datePicker.setValue(oldDate);
+            return;
+        }
+        if (endDatePicker.getValue() != null && endDatePicker.getValue().compareTo(newDate) < 0) {
+            endDatePicker.setValue(null);
+        }
+        endDatePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                System.out.println("AAAaaA");
+                System.out.println(newDate);
+                setDisable(empty || date.compareTo(newDate) < 0);
+            }
+        });
+    }
+
+    private void endRegistrationDateChanged(ObservableValue<? extends LocalDate> observableValue, LocalDate oldDate, LocalDate newDate) {
+        if (endHourBox.getSelectionModel().getSelectedIndex() < 0 || endMinutesBox.getSelectionModel().getSelectedIndex() < 0) {
+            endHourBox.getSelectionModel().select(hourBox.getSelectionModel().getSelectedIndex());
+            endMinutesBox.getSelectionModel().select(minutesBox.getSelectionModel().getSelectedIndex());
+            return;
+        }
+        // TODO ...
+        if (Objects.equals(newDate, datePicker.getValue())) {
+            if (endHourBox.getSelectionModel().getSelectedIndex() < hourBox.getSelectionModel().getSelectedIndex()) {
+                endHourBox.getSelectionModel().select(hourBox.getSelectionModel().getSelectedIndex());
+            }
+            if (endHourBox.getSelectionModel().getSelectedIndex() == hourBox.getSelectionModel().getSelectedIndex() &&
+                    endMinutesBox.getSelectionModel().getSelectedIndex() < minutesBox.getSelectionModel().getSelectedIndex()) {
+                endMinutesBox.getSelectionModel().select(minutesBox.getSelectionModel().getSelectedIndex());
+            }
+        }
+    }
+
+    private void registrationHourChanged(ObservableValue<? extends String> observableValue, String oldHour, String newHour) {
+        System.out.println("LOX2");
+        if (endHourBox.getSelectionModel().getSelectedIndex() >= 0 && endMinutesBox.getSelectionModel().getSelectedIndex() >= 0) {
+            if (Objects.equals(datePicker.getValue(), endDatePicker.getValue()) &&
+                    endHourBox.getSelectionModel().getSelectedIndex() + 8 <= Integer.parseInt(newHour)) {
+                endHourBox.getSelectionModel().select(newHour);
+                if (endMinutesBox.getSelectionModel().getSelectedIndex() < minutesBox.getSelectionModel().getSelectedIndex()) {
+                    endMinutesBox.getSelectionModel().select(minutesBox.getSelectionModel().getSelectedIndex());
+                }
+            }
+
+        }
+    }
+
+    private void registrationMinuteChanged(ObservableValue<? extends String> observableValue, String oldMinute, String newMinute) {
+        System.out.println("LOX");
+        if (endHourBox.getSelectionModel().getSelectedIndex() >= 0 && endMinutesBox.getSelectionModel().getSelectedIndex() >= 0) {
+            if (Objects.equals(datePicker.getValue(), endDatePicker.getValue()) &&
+                    endHourBox.getSelectionModel().getSelectedIndex() <= hourBox.getSelectionModel().getSelectedIndex() &&
+                    endMinutesBox.getSelectionModel().getSelectedIndex() <= Integer.parseInt(newMinute)) {
+                endMinutesBox.getSelectionModel().select(newMinute);
+            }
+        }
+    }
+
+    private void endRegistrationHourChanged(ObservableValue<? extends String> observableValue, String oldHour, String newHour) {
+
+        if (newHour == null) {
+            return;
+        }
+        if (endDatePicker.getValue() == null) {
+            Platform.runLater(() -> endHourBox.getSelectionModel().clearSelection());
+            return;
+        }
+        if (Objects.equals(datePicker.getValue(), endDatePicker.getValue())) {
+            if (hourBox.getSelectionModel().getSelectedIndex() + 8 > Integer.parseInt(newHour)) {
+                endHourBox.getSelectionModel().select(oldHour);
+            } else if (hourBox.getSelectionModel().getSelectedIndex() + 8 == Integer.parseInt(newHour) &&
+                    endMinutesBox.getSelectionModel().getSelectedIndex() < minutesBox.getSelectionModel().getSelectedIndex()) {
+                endMinutesBox.getSelectionModel().select(minutesBox.getSelectionModel().getSelectedIndex());
+            }
+        }
+
+    }
+
+    private void endRegistrationMinuteChanged(ObservableValue<? extends String> observableValue, String oldMinute, String newMinute) {
+        if (newMinute == null) {
+            return;
+        }
+        if (endDatePicker.getValue() == null) {
+            Platform.runLater(() -> endMinutesBox.getSelectionModel().clearSelection());
+            return;
+        }
+        if (Objects.equals(datePicker.getValue(), endDatePicker.getValue())) {
+            if (hourBox.getSelectionModel().getSelectedIndex() == endHourBox.getSelectionModel().getSelectedIndex() &&
+                    Integer.parseInt(newMinute) < minutesBox.getSelectionModel().getSelectedIndex()) {
+                endMinutesBox.getSelectionModel().select(oldMinute);
+            }
+        }
+    }
+
 
     private ObservableList<String> getClockTime(int start, int stop) {
         ObservableList<String> list = FXCollections.observableArrayList();
