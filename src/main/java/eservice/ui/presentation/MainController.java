@@ -175,8 +175,8 @@ public class MainController {
             RegistrationController controller = loader.<RegistrationController>getController();
             controller.set(registration);
             Stage stage = new Stage();
-            stage.setTitle("My New Stage Title");
-            stage.setScene(new Scene(root, 900, 450));
+            stage.setTitle("Запись в автосервис");
+            stage.setScene(new Scene(root, 700, 800));
             stage.show();
             // Hide this current window (if this is what you want)
 //            ((Node)(event.getSource())).getScene().getWindow().hide();
