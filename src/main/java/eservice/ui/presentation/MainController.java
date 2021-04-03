@@ -5,6 +5,7 @@ import eservice.business.core.Client;
 import eservice.business.core.Registration;
 import eservice.business.services.NotificationsListener;
 import eservice.business.services.RegistrationsService;
+import eservice.business.services.StatusService;
 import eservice.business.services.UpdatableRegistration;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -60,6 +61,7 @@ public class MainController {
     ObservableList<UpdatableRegistration> newRegistrations = FXCollections.observableArrayList();
 
     RegistrationsService registrationsService;
+    final StatusService statusService = new StatusService();
 
     @FXML
     void initialize() {
@@ -120,7 +122,7 @@ public class MainController {
         });
 
         setColumn(dateColumn, x -> simpleDateFormat.format(x.getDateOfRegistration().toDate()));
-        setColumn(statusColumn, Registration::getStatus);
+        setColumn(statusColumn, x -> statusService.getCurrent(x.getStatus()));
         setColumn(carColumn, x -> {
             if (x.getClient() != null) {
                 Car car = x.getClient().getCar(x.getCarId());
