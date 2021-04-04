@@ -1,17 +1,26 @@
 package eservice.business.services;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.annotation.Exclude;
+import com.google.cloud.firestore.annotation.PropertyName;
 import com.google.firebase.cloud.FirestoreClient;
 import com.sun.javafx.binding.ExpressionHelper;
 import eservice.business.core.Client;
 import eservice.business.core.Registration;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 
 public class UpdatableRegistration {
@@ -32,6 +41,7 @@ public class UpdatableRegistration {
     public UpdatableRegistration(String registrationId, NotificationsListener<Registration> registrationListener) {
         this.registrationId = registrationId;
         this.registrationListener = Optional.ofNullable(registrationListener);
+        setNonChangesFields();
         reference = db.collection("registrations").document(registrationId);
         reference.addSnapshotListener((documentSnapshots, e) -> {
             if (e != null) {
@@ -52,17 +62,22 @@ public class UpdatableRegistration {
                         }
 //                        Re observableRegistration = new ObservableRegistration();
 //                        client =  new UpdatableClient()
+                        System.out.println("SET");
+
                         registration.set(reg);
                         this.registrationListener.ifPresent(x -> x.add(this, reg));
 //                        registrationListener.add(registration.get());
                         break;
                     case MODIFIED:
+                        System.out.println("MOD");
                         Registration updatedRegistration = documentSnapshots.toObject(Registration.class);
                         updatedRegistration.setClient(registration.getValue().getClient());
 //                        registration.set(updatedRegistration);
 //                        registration.getValue().setSas("Asa");
 //                        registration.getValue().setDescription("SEEX");
-                        registration.set(updatedRegistration);
+
+                        registration.setValue(updatedRegistration);
+
 //                        registration.set(registration.getValue());
 //                        registrationListener.modify(registration.get());
                         break;
@@ -93,27 +108,53 @@ public class UpdatableRegistration {
         }
     }
 
-//    @Override
-//    public void addListener(ChangeListener<? super Registration> changeListener) {
-//        helper = ExpressionHelper.addListener(this.helper, this, changeListener);
-//    }
-//
-//    @Override
-//    public void removeListener(ChangeListener<? super Registration> changeListener) {
-//        this.helper = ExpressionHelper.removeListener(this.helper, changeListener);
-//    }
-//
-//    @Override
-//    public void addListener(InvalidationListener invalidationListener) {
-//        helper = ExpressionHelper.addListener(this.helper, this, invalidationListener);
-//    }
-//
-//    @Override
-//    public void removeListener(InvalidationListener invalidationListener) {
-//        this.helper = ExpressionHelper.removeListener(this.helper, invalidationListener);
-//    }
-
     public SimpleObjectProperty<Registration> getValue() {
         return registration;
+    }
+
+    private Map<String, Object> changesFields;
+
+    public Map<String, Object> getChangesFields() {
+        return changesFields;
+    }
+
+    public void setNonChangesFields() {
+        changesFields = new HashMap<>();
+    }
+
+    public void setDateOfRegistration(Timestamp dateOfRegistration) {
+        changesFields.put(Registration.RegistrationFiled.DATE_OF_REGISTRATION, dateOfRegistration);
+    }
+
+
+    public void setDescription(String description) {
+        changesFields.put(Registration.RegistrationFiled.DESCRIPTION, description);
+    }
+
+    public void setTypeOfWorks(String typeOfWorks) {
+        changesFields.put(Registration.RegistrationFiled.TYPE_OF_WORKS, typeOfWorks);
+    }
+
+    public void setCost(Double cost) {
+        changesFields.put(Registration.RegistrationFiled.COST, cost);
+    }
+
+
+    public void setTimeOfWorks(Timestamp timeOfWorks) {
+        changesFields.put(Registration.RegistrationFiled.TIME_OF_WORKS, timeOfWorks);
+
+    }
+
+    public void setStatus(String status) {
+        changesFields.put(Registration.RegistrationFiled.STATUS, status);
+    }
+
+    public void update() {
+        if (changesFields.isEmpty()) {
+            return;
+        }
+
+        reference.update(changesFields);
+        setNonChangesFields();
     }
 }

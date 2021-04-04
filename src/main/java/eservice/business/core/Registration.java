@@ -36,15 +36,13 @@ public class Registration {
     private Client client;
 
 
-    private final Map<String, Object> changesFields;
-
     public Registration() {
-        changesFields = new HashMap<>();
+
     }
 
     private Registration(String id, String clientId, String carId, Timestamp dateOfCreation,
                          Timestamp dateOfRegistration, String description, String typeOfWorks,
-                         Double cost, Timestamp timeOfWorks, String status, String notes, Client client, Map<String, Object> changesFields) {
+                         Double cost, Timestamp timeOfWorks, String status, String notes, Client client) {
         this.id = id;
         this.clientId = clientId;
         this.carId = carId;
@@ -57,7 +55,6 @@ public class Registration {
         this.status = status;
         this.notes = notes;
         this.client = client;
-        this.changesFields = changesFields;
     }
 
     public Registration(String id, String clientId, String carId, Timestamp dateOfCreation, Timestamp dateOfRegistration, String description, String typeOfWorks, Double cost, Timestamp timeOfWorks, String status, String notes) {
@@ -72,7 +69,6 @@ public class Registration {
         this.timeOfWorks = timeOfWorks;
         this.status = status;
         this.notes = notes;
-        changesFields = new HashMap<>();
     }
 
     public String getId() {
@@ -102,7 +98,6 @@ public class Registration {
     @Exclude()
     public void setDateOfRegistration(Timestamp dateOfRegistration) {
         this.dateOfRegistration = dateOfRegistration;
-        changesFields.put(RegistrationFiled.DATE_OF_REGISTRATION, dateOfRegistration);
     }
 
     @PropertyName(RegistrationFiled.DESCRIPTION)
@@ -113,7 +108,6 @@ public class Registration {
     @Exclude()
     public void setDescription(String description) {
         this.description = description;
-        changesFields.put(RegistrationFiled.DESCRIPTION, description);
     }
 
     @PropertyName(RegistrationFiled.TYPE_OF_WORKS)
@@ -124,7 +118,6 @@ public class Registration {
     @Exclude()
     public void setTypeOfWorks(String typeOfWorks) {
         this.typeOfWorks = typeOfWorks;
-        changesFields.put(RegistrationFiled.TYPE_OF_WORKS, typeOfWorks);
     }
 
     @PropertyName(RegistrationFiled.COST)
@@ -135,7 +128,6 @@ public class Registration {
     @Exclude()
     public void setCost(Double cost) {
         this.cost = cost;
-        changesFields.put(RegistrationFiled.COST, cost);
     }
 
     @PropertyName(RegistrationFiled.TIME_OF_WORKS)
@@ -146,7 +138,6 @@ public class Registration {
     @Exclude()
     public void setTimeOfWorks(Timestamp timeOfWorks) {
         this.timeOfWorks = timeOfWorks;
-        changesFields.put(RegistrationFiled.TIME_OF_WORKS, timeOfWorks);
     }
 
     @PropertyName(RegistrationFiled.STATUS)
@@ -157,7 +148,6 @@ public class Registration {
     @Exclude()
     public void setStatus(String status) {
         this.status = status;
-        changesFields.put(RegistrationFiled.STATUS, status);
     }
 
     @PropertyName(RegistrationFiled.NOTES)
@@ -165,14 +155,12 @@ public class Registration {
         return notes;
     }
 
-    public Map<String, Object> getChangesFields() {
-        return changesFields;
-    }
-
+    @Exclude()
     public Client getClient() {
         return client;
     }
 
+    @Exclude()
     public void setClient(Client client) {
         this.client = client;
     }
@@ -190,8 +178,7 @@ public class Registration {
                 ", cost=" + cost +
                 ", timeOfWorks=" + timeOfWorks +
                 ", status='" + status + '\'' +
-                ", notes='" + notes + '\'' +
-                ", changesFields=" + changesFields +
+                ", notes='" + notes +
                 '}';
     }
 
@@ -222,23 +209,25 @@ public class Registration {
     @Override
     public Object clone() {
         return new Registration(id, clientId, carId, dateOfCreation, dateOfRegistration,
-                description, typeOfWorks, cost, timeOfWorks, status, notes, client, changesFields);
+                description, typeOfWorks, cost, timeOfWorks, status, notes, client);
+    }
+
+    public static final class RegistrationFiled {
+        public final static String ID = "id";
+        public final static String CLIENT_ID = "client_id";
+        public final static String CAR_ID = "car_id";
+        public final static String DATE_OF_CREATION = "date_of_creation";
+        public final static String DATE_OF_REGISTRATION = "date_of_registration";
+        public final static String DESCRIPTION = "description";
+        public final static String TYPE_OF_WORKS = "type_of_works";
+        public final static String COST = "cost";
+        public final static String TIME_OF_WORKS = "time_of_works";
+        public final static String STATUS = "status";
+        public final static String NOTES = "notes";
+
+        private RegistrationFiled() {
+        }
     }
 }
 
-final class RegistrationFiled {
-    public final static String ID = "id";
-    public final static String CLIENT_ID = "client_id";
-    public final static String CAR_ID = "car_id";
-    public final static String DATE_OF_CREATION = "date_of_creation";
-    public final static String DATE_OF_REGISTRATION = "date_of_registration";
-    public final static String DESCRIPTION = "description";
-    public final static String TYPE_OF_WORKS = "type_of_works";
-    public final static String COST = "cost";
-    public final static String TIME_OF_WORKS = "time_of_works";
-    public final static String STATUS = "status";
-    public final static String NOTES = "notes";
 
-    private RegistrationFiled() {
-    }
-}

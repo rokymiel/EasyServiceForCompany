@@ -77,12 +77,18 @@ public class MainController {
                         UpdatableRegistration up = (UpdatableRegistration) sender;
                         if (Objects.equals(up.getRegistration().getStatus(), "new")) {
                             newRegistrations.add(up);
+                            System.out.println("add from add");
                             up.getValue().addListener((observableValue, registration, newRegistration) -> {
                                 synchronized (this) {
+                                    System.out.println("List");
                                     if (!registration.getStatus().equals("new") && newRegistration.getStatus().equals("new")) {
                                         newRegistrations.add(up);
+                                        System.out.println("add");
+
                                     } else if (registration.getStatus().equals("new") && !newRegistration.getStatus().equals("new")) {
                                         newRegistrations.remove(up);
+                                        System.out.println("remove");
+
                                     }
                                 }
                             });
@@ -97,17 +103,23 @@ public class MainController {
 
         newRegistrationsTable.setItems(newRegistrations);
 
-
         newRegistrationsColumn.setCellFactory(col -> {
-            TableCell<UpdatableRegistration, Registration> cell = new TableCell<>();
+            TableCell<UpdatableRegistration, Registration> tableCell = new TableCell<>() {
+                @Override
+                protected void updateItem(Registration item, boolean empty) {
+                    super.updateItem(item, empty);
+                    System.out.println("Cellllllll");
+                    System.out.println(item);
+                    System.out.println(empty);
+                    this.setText(null);
+                    this.setGraphic(null);
 
-            cell.itemProperty().addListener((observableValue, o, newValue) -> {
-                if (newValue != null) {
-                    Node graphic = createDriverGraphic(newValue);
-                    cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(graphic));
+                    if(!empty){
+                        this.setGraphic(createDriverGraphic(item));
+                    }
                 }
-            });
-            return cell;
+            };
+            return tableCell;
         });
 
         allRegistrationsTable.setRowFactory(tv -> {
@@ -188,7 +200,7 @@ public class MainController {
             root = loader.load();
 
             RegistrationController controller = loader.<RegistrationController>getController();
-            controller.set(registration);
+            controller.set(registration, registrationsService);
             Stage stage = new Stage();
             stage.setTitle("Запись в автосервис");
             stage.setScene(new Scene(root, 800, 800));

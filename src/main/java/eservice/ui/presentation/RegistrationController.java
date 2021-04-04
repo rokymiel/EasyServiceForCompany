@@ -3,10 +3,14 @@ package eservice.ui.presentation;
 import eservice.business.core.Car;
 import eservice.business.core.Client;
 import eservice.business.core.Registration;
+import eservice.business.services.RegistrationsService;
 import eservice.business.services.StatusService;
 import eservice.business.services.UpdatableRegistration;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,6 +27,7 @@ import java.util.stream.IntStream;
 
 public class RegistrationController implements ChangeListener<Registration> {
     private UpdatableRegistration updatableRegistration;
+    private RegistrationsService registrationsService;
 
     @FXML
     private ComboBox<String> typeOfWorksBox;
@@ -74,9 +79,11 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     private final StatusService statusService = new StatusService();
 
-    public void set(UpdatableRegistration updatableRegistration) {
+    public void set(UpdatableRegistration updatableRegistration, RegistrationsService registrationsService) {
         this.updatableRegistration = updatableRegistration;
+        this.registrationsService = registrationsService;
         updatableRegistration.getValue().addListener(this);
+        setListeners();
         setFields(updatableRegistration.getRegistration());
         System.out.println("SAST");
 
@@ -101,37 +108,40 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     @Override
     public void changed(ObservableValue<? extends Registration> observableValue, Registration registration, Registration newValue) {
-        if (newValue != null) {
-            setFields(newValue);
-        }
+        System.out.println("LIIIIIIIISTEEEEENNNNNN");
+        Platform.runLater(() -> {
+            if (newValue != null) {
+                setFields(newValue);
+            }
+        });
+    }
+
+    private void setListeners() {
+        datePicker.valueProperty().addListener(this::registrationDateChanged);
+        hourBox.valueProperty().addListener(this::registrationHourChanged);
+        minutesBox.valueProperty().addListener(this::registrationMinuteChanged);
+        endDatePicker.valueProperty().addListener(this::endRegistrationDateChanged);
+        endHourBox.valueProperty().addListener(this::endRegistrationHourChanged);
+        endMinutesBox.valueProperty().addListener(this::endRegistrationMinuteChanged);
+
     }
 
     private void setFields(Registration registration) {
         costField.setText(registration.getCost() == null ? "" : String.valueOf(registration.getCost()));
         setStatus(registration.getStatus());
 
-        datePicker.valueProperty().addListener(this::registrationDateChanged);
+
         datePicker.setValue(registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         int hour = registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().getHour();
         int minute = registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime().getMinute();
-        System.out.println(hour);
-        System.out.println(minute);
-        System.out.println(registration.getDateOfRegistration());
-        System.out.println(registration.getDateOfRegistration().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
 
-        hourBox.valueProperty().addListener(this::registrationHourChanged);
-        minutesBox.valueProperty().addListener(this::registrationMinuteChanged);
+
         hourBox.getSelectionModel().select(hour - 8);
         minutesBox.getSelectionModel().select(minute);
 
-        endDatePicker.valueProperty().addListener(this::endRegistrationDateChanged);
         if (registration.getTimeOfWorks() != null) {
             endDatePicker.setValue(registration.getTimeOfWorks().toDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }
-
-        endHourBox.valueProperty().addListener(this::endRegistrationHourChanged);
-        endMinutesBox.valueProperty().addListener(this::endRegistrationMinuteChanged);
-
         notesArea.setText(registration.getNotes());
         Client client = registration.getClient();
         if (client != null) {
@@ -202,17 +212,21 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     @FXML
     public void onNextClicked() {
-        setStatus(statusService.getNextStatus(status));
+        updatableRegistration.setStatus(statusService.getNextStatus(status));
+        updatableRegistration.update();
     }
 
     @FXML
     public void onPreviousClicked() {
-        setStatus(statusService.getPreviousStatus(status));
+        updatableRegistration.setStatus(statusService.getPreviousStatus(status));
+        updatableRegistration.update();
+
     }
 
     @FXML
     public void onCancelClicked() {
-        setStatus(statusService.getCancellationStatus(status));
+        updatableRegistration.setStatus(statusService.getCancellationStatus(status));
+        updatableRegistration.update();
     }
 
     private void endRegistrationDateChanged(ObservableValue<? extends LocalDate> observableValue, LocalDate oldDate, LocalDate newDate) {
@@ -305,6 +319,5 @@ public class RegistrationController implements ChangeListener<Registration> {
         }
         return list;
     }
-
 
 }

@@ -68,7 +68,11 @@ public class RegistrationsService implements RegistrationsServiceable {
 
     @Override
     public void update(Registration registration) {
-        reference.document(registration.getId()).update(registration.getChangesFields());
+        reference.document(registration.getId()).set(registration);//.update(registration.getChangesFields());
+    }
+
+    public void add(Registration registration) {
+        reference.add(registration);
     }
 
     @Override
