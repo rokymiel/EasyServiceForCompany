@@ -75,23 +75,25 @@ public class MainController {
                     @Override
                     public void add(Object sender, Registration item) {
                         UpdatableRegistration up = (UpdatableRegistration) sender;
-                        if (Objects.equals(up.getRegistration().getStatus(), "new")) {
-                            newRegistrations.add(up);
-                            System.out.println("add from add");
-                            up.getValue().addListener((observableValue, registration, newRegistration) -> {
-                                synchronized (this) {
-                                    System.out.println("List");
-                                    if (!registration.getStatus().equals("new") && newRegistration.getStatus().equals("new")) {
-                                        newRegistrations.add(up);
-                                        System.out.println("add");
+                        synchronized (this) {
+                            if (Objects.equals(up.getRegistration().getStatus(), "new")) {
+                                newRegistrations.add(up);
+                                System.out.println("add from add");
+                                up.getValue().addListener((observableValue, registration, newRegistration) -> {
+                                    synchronized (this) {
+                                        System.out.println("List");
+                                        if (!registration.getStatus().equals("new") && newRegistration.getStatus().equals("new")) {
+                                            newRegistrations.add(up);
+                                            System.out.println("add");
 
-                                    } else if (registration.getStatus().equals("new") && !newRegistration.getStatus().equals("new")) {
-                                        newRegistrations.remove(up);
-                                        System.out.println("remove");
+                                        } else if (registration.getStatus().equals("new") && !newRegistration.getStatus().equals("new")) {
+                                            newRegistrations.remove(up);
+                                            System.out.println("remove");
 
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
                     }
                 }));
@@ -114,7 +116,7 @@ public class MainController {
                     this.setText(null);
                     this.setGraphic(null);
 
-                    if(!empty){
+                    if (!empty) {
                         this.setGraphic(createDriverGraphic(item));
                     }
                 }
