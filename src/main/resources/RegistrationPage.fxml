@@ -24,9 +24,8 @@
          <children>
             <ToolBar layoutX="200.0" layoutY="16.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="39.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
-                <Button focusTraversable="false" mnemonicParsing="false" text="Отменить" />
-                  <Button focusTraversable="false" mnemonicParsing="false" text="Редактировать" />
-                  <Button focusTraversable="false" mnemonicParsing="false" text="Сохранить" />
+                <Button fx:id="cancelChangesButton" focusTraversable="false" mnemonicParsing="false" onAction="#cancelEdit" text="Отменить" visible="false" />
+                  <Button fx:id="saveChangesButton" focusTraversable="false" mnemonicParsing="false" onAction="#saveChanges" text="Сохранить" visible="false" />
               </items>
                <opaqueInsets>
                   <Insets />

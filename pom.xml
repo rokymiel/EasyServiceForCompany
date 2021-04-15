@@ -45,7 +45,11 @@
             <artifactId>google-api-client</artifactId>
             <version>1.31.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.jfxtras</groupId>
+            <artifactId>jfxtras-labs</artifactId>
+            <version>9.0-r1</version>
+        </dependency>
     </dependencies>
 
 </project>

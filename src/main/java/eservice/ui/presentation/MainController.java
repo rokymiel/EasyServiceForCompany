@@ -22,11 +22,18 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import jfxtras.icalendarfx.VCalendar;
+import jfxtras.scene.control.agenda.Agenda;
+import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
+import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Function;
