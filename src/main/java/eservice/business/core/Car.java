@@ -12,6 +12,8 @@ public class Car {
     private String model;
     @PropertyName(CarFiled.GEAR)
     private String gear;
+    @PropertyName(CarFiled.BODY)
+    private String body;
     @PropertyName(CarFiled.ENGINE_VOLUME)
     private Double engineVolume;
     @PropertyName(CarFiled.PRODUCTION_YEAR)
@@ -34,6 +36,11 @@ public class Car {
     @PropertyName(CarFiled.GEAR)
     public String getGear() {
         return gear;
+    }
+
+    @PropertyName(CarFiled.BODY)
+    public String getBody() {
+        return body;
     }
 
     @PropertyName(CarFiled.ENGINE_VOLUME)
@@ -84,6 +91,7 @@ final class CarFiled {
     public final static String MARK = "mark";
     public final static String MODEL = "model";
     public final static String GEAR = "gear";
+    public final static String BODY = "body";
     public final static String ENGINE_VOLUME = "engine_volume";
     public final static String PRODUCTION_YEAR = "production_year";
 

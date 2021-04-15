@@ -21,6 +21,8 @@ public class Client {
     private String patronymic;
     @PropertyName(ClientFiled.PHONE_NUMBER)
     private String phoneNumber;
+    @PropertyName(ClientFiled.EMAIL)
+    private String email;
     @PropertyName(ClientFiled.DATE_OF_BIRTH)
     private Timestamp dateOfBirth;
     private List<Car> cars = new ArrayList<>();
@@ -74,6 +76,11 @@ public class Client {
     @PropertyName(ClientFiled.PHONE_NUMBER)
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    @PropertyName(ClientFiled.EMAIL)
+    public String getEmail() {
+        return email;
     }
 
     @PropertyName(ClientFiled.DATE_OF_BIRTH)
@@ -157,6 +164,7 @@ final class ClientFiled {
     public final static String SURNAME = "surname";
     public final static String PATRONYMIC = "patronymic";
     public final static String PHONE_NUMBER = "phone_number";
+    public final static String EMAIL = "email";
     public final static String DATE_OF_BIRTH = "date_of_birth";
     public final static String REGISTRATIONS = "registrations";
 
