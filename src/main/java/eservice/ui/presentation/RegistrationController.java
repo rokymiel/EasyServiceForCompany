@@ -65,6 +65,8 @@ public class RegistrationController implements ChangeListener<Registration> {
     private TextField patronymicField;
     @FXML
     private TextField phoneField;
+    @FXML
+    private TextField emailField;
 
     @FXML
     private TextField markField;
@@ -74,6 +76,8 @@ public class RegistrationController implements ChangeListener<Registration> {
     private TextField yearField;
     @FXML
     private TextField gearField;
+    @FXML
+    private TextField bodyField;
     @FXML
     private TextField engineVolumeField;
 
@@ -149,6 +153,7 @@ public class RegistrationController implements ChangeListener<Registration> {
             nameField.setText(client.getName());
             patronymicField.setText(client.getPatronymic());
             phoneField.setText(client.getPhoneNumber());
+            emailField.setText(client.getEmail());
 
             Car car = client.getCar(registration.getCarId());
             if (car != null) {
@@ -156,6 +161,7 @@ public class RegistrationController implements ChangeListener<Registration> {
                 modelField.setText(car.getModel());
                 yearField.setText(String.valueOf(car.getProductionYear()));
                 gearField.setText(car.getGear());
+                bodyField.setText(car.getBody());
                 engineVolumeField.setText(String.valueOf(car.getEngineVolume()));
             }
 
