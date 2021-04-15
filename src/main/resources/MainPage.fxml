@@ -88,7 +88,7 @@
                      <center>
                         <TableView fx:id="newRegistrationsTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                           <columns>
-                            <TableColumn fx:id="newRegistrationsColumn" prefWidth="75.0" />
+                            <TableColumn fx:id="newRegistrationsColumn" editable="false" prefWidth="75.0" sortable="false" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -108,13 +108,13 @@
                                  <content>
                                     <TableView fx:id="allRegistrationsTable" prefHeight="200.0" prefWidth="200.0">
                                       <columns>
-                                        <TableColumn fx:id="dateColumn" prefWidth="75.0" text="Дата записи" />
-                                          <TableColumn fx:id="statusColumn" prefWidth="75.0" text="Статус" />
-                                        <TableColumn fx:id="carColumn" prefWidth="75.0" text="Автомобиль" />
-                                          <TableColumn fx:id="typeOfWorksColumn" prefWidth="75.0" text="Тип работ" />
-                                          <TableColumn fx:id="timeOfWorksColumn" prefWidth="75.0" text="Время работ" />
-                                          <TableColumn fx:id="clientNameColumn" prefWidth="75.0" text="Клиент" />
-                                          <TableColumn fx:id="phoneColumn" prefWidth="75.0" text="Номер телефона" />
+                                        <TableColumn fx:id="dateColumn" editable="false" prefWidth="75.0" text="Дата записи" />
+                                          <TableColumn fx:id="statusColumn" editable="false" prefWidth="75.0" text="Статус" />
+                                        <TableColumn fx:id="carColumn" editable="false" prefWidth="75.0" text="Автомобиль" />
+                                          <TableColumn fx:id="typeOfWorksColumn" editable="false" prefWidth="75.0" text="Тип работ" />
+                                          <TableColumn fx:id="timeOfWorksColumn" editable="false" prefWidth="75.0" text="Время работ" />
+                                          <TableColumn fx:id="clientNameColumn" editable="false" prefWidth="75.0" text="Клиент" />
+                                          <TableColumn fx:id="phoneColumn" editable="false" prefWidth="75.0" text="Номер телефона" />
                                       </columns>
                                        <columnResizePolicy>
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
