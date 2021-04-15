@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -62,7 +63,7 @@ public class MainController {
 
     RegistrationsService registrationsService;
     final StatusService statusService = new StatusService();
-
+    private final Object locker = new Object();
     @FXML
     void initialize() {
         System.out.println("AAAA");
@@ -75,12 +76,14 @@ public class MainController {
                     @Override
                     public void add(Object sender, Registration item) {
                         UpdatableRegistration up = (UpdatableRegistration) sender;
-                        synchronized (this) {
+                        synchronized (locker) {
                             if (Objects.equals(up.getRegistration().getStatus(), "new")) {
                                 newRegistrations.add(up);
                                 System.out.println("add from add");
+                                System.out.println(newRegistrations.size());
+                                System.out.println(up.getRegistration());
                                 up.getValue().addListener((observableValue, registration, newRegistration) -> {
-                                    synchronized (this) {
+                                    synchronized (locker) {
                                         System.out.println("List");
                                         if (!registration.getStatus().equals("new") && newRegistration.getStatus().equals("new")) {
                                             newRegistrations.add(up);
@@ -113,6 +116,7 @@ public class MainController {
                     System.out.println("Cellllllll");
                     System.out.println(item);
                     System.out.println(empty);
+                    System.out.println(newRegistrations.size());
                     this.setText(null);
                     this.setGraphic(null);
 
@@ -121,8 +125,15 @@ public class MainController {
                     }
                 }
             };
+            tableCell.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getClickCount() == 2 && (!tableCell.isEmpty())) {
+                    UpdatableRegistration rowData = tableCell.getTableRow().getItem();
+                    registrationTapped(rowData);
+                }
+            });
             return tableCell;
         });
+        newRegistrationsColumn.setComparator(Comparator.comparing(Registration::getDateOfCreation).reversed());
 
         allRegistrationsTable.setRowFactory(tv -> {
             TableRow<UpdatableRegistration> row = new TableRow<>();
