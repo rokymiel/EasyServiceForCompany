@@ -1,13 +1,16 @@
 package eservice.business.services;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import eservice.business.core.Car;
 import eservice.business.core.Client;
+import eservice.business.core.Mileage;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class UpdatableClient {
@@ -29,6 +32,7 @@ public class UpdatableClient {
         this.carListener = Optional.ofNullable(carListener);
         this.clientId = clientId;
         reference = db.collection("users").document(clientId);
+
         reference.addSnapshotListener((documentSnapshots, e) -> {
             if (e != null) {
                 return;
@@ -72,6 +76,8 @@ public class UpdatableClient {
                     switch (document.getType()) {
                         case ADDED:
                             car = document.getDocument().toObject(Car.class);
+                            System.out.println("CAR " + car.getCarName());
+                            System.out.println("getMileage " + car.getMileage());
                             upd = (Client) client.getValue().clone();
                             upd.addCar(car);
                             client.set(upd);
@@ -104,6 +110,17 @@ public class UpdatableClient {
             else return ObjectStatus.REMOVED;
         }
     }
+
+    public synchronized void verify(Mileage mileage, String carId) {
+        mileage.setVerified(true);
+        reference.collection("cars").document(carId).update(Map.of(Car.CarFiled.MILEAGE, client.getValue().getCar(carId).getMileage()));
+    }
+
+    public synchronized void addMileage(Mileage mileage, String carId) {
+        client.getValue().getCar(carId).addMileage(mileage);
+        reference.collection("cars").document(carId).update(Map.of(Car.CarFiled.MILEAGE, client.getValue().getCar(carId).getMileage()));
+    }
+
 
 }
 

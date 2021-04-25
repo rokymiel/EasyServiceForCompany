@@ -39,7 +39,7 @@ public class Client {
 //        this.cars = cars;
     }
 
-    private Client(String id, String name, String surname, String patronymic, String phoneNumber, Timestamp dateOfBirth, List<Car> cars, List<String> registrations) {
+    private Client(String id, String name, String surname, String patronymic, String phoneNumber, String email, Timestamp dateOfBirth, List<Car> cars, List<String> registrations) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -48,6 +48,7 @@ public class Client {
         this.dateOfBirth = dateOfBirth;
         this.cars = cars;
         this.registrations = registrations;
+        this.email = email;
     }
 
     public Client() {
@@ -152,23 +153,24 @@ public class Client {
 
     @Override
     public Object clone() {
-        return new Client(id, name, surname, patronymic, phoneNumber, dateOfBirth, cars, registrations);
+        return new Client(id, name, surname, patronymic, phoneNumber, email, dateOfBirth, cars, registrations);
     }
     //        this.cars = cars;
 //    }
 
-}
+    public static final class ClientFiled {
+        public final static String NAME = "name";
+        public final static String SURNAME = "surname";
+        public final static String PATRONYMIC = "patronymic";
+        public final static String PHONE_NUMBER = "phone";
+        public final static String EMAIL = "email";
+        public final static String DATE_OF_BIRTH = "date_of_birth";
+        public final static String REGISTRATIONS = "registrations";
 
-final class ClientFiled {
-    public final static String NAME = "name";
-    public final static String SURNAME = "surname";
-    public final static String PATRONYMIC = "patronymic";
-    public final static String PHONE_NUMBER = "phone_number";
-    public final static String EMAIL = "email";
-    public final static String DATE_OF_BIRTH = "date_of_birth";
-    public final static String REGISTRATIONS = "registrations";
+        private ClientFiled() {
+        }
 
-    private ClientFiled() {
     }
 
 }
+

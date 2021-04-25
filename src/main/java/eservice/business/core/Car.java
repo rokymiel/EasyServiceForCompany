@@ -1,7 +1,11 @@
 package eservice.business.core;
 
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
+
+import java.util.List;
+import java.util.Map;
 
 public class Car {
     @DocumentId
@@ -18,6 +22,8 @@ public class Car {
     private Double engineVolume;
     @PropertyName(CarFiled.PRODUCTION_YEAR)
     private Integer productionYear;
+    @PropertyName(CarFiled.MILEAGE)
+    private List<Mileage> mileage;
 
     public String getId() {
         return id;
@@ -53,16 +59,37 @@ public class Car {
         return productionYear;
     }
 
+    @PropertyName(CarFiled.MILEAGE)
+    public List<Mileage> getMileage() {
+        return mileage;
+    }
+
+    public void addMileage(Mileage mileage) {
+        this.mileage.add(mileage);
+    }
+
     public Car() {
     }
 
-    private Car(String id, String mark, String model, String gear, Double engineVolume, Integer productionYear) {
+    private Car(String id, String mark, String model, String gear, String body, Double engineVolume, Integer productionYear) {
         this.id = id;
         this.mark = mark;
         this.model = model;
         this.gear = gear;
         this.engineVolume = engineVolume;
         this.productionYear = productionYear;
+        this.body = body;
+    }
+
+    public Car(String id, String mark, String model, String gear, String body, Double engineVolume, Integer productionYear, List<Mileage> mileage) {
+        this.id = id;
+        this.mark = mark;
+        this.model = model;
+        this.gear = gear;
+        this.engineVolume = engineVolume;
+        this.productionYear = productionYear;
+        this.body = body;
+        this.mileage = mileage;
     }
 
     public String getCarName() {
@@ -83,19 +110,20 @@ public class Car {
 
     @Override
     public Object clone() {
-        return new Car(id, mark, model, gear, engineVolume, productionYear);
+        return new Car(id, mark, model, gear, body, engineVolume, productionYear);
+    }
+
+    public static final class CarFiled {
+        public final static String MARK = "mark";
+        public final static String MODEL = "model";
+        public final static String GEAR = "gear";
+        public final static String BODY = "body";
+        public final static String ENGINE_VOLUME = "engine";
+        public final static String PRODUCTION_YEAR = "production_year";
+        public final static String MILEAGE = "mileage";
+
+        private CarFiled() {
+        }
     }
 }
 
-final class CarFiled {
-    public final static String MARK = "mark";
-    public final static String MODEL = "model";
-    public final static String GEAR = "gear";
-    public final static String BODY = "body";
-    public final static String ENGINE_VOLUME = "engine_volume";
-    public final static String PRODUCTION_YEAR = "production_year";
-
-    private CarFiled() {
-    }
-
-}

@@ -3,9 +3,11 @@ package eservice.ui.presentation;
 import com.google.cloud.Timestamp;
 import eservice.business.core.Car;
 import eservice.business.core.Client;
+import eservice.business.core.Mileage;
 import eservice.business.core.Registration;
 import eservice.business.services.RegistrationsService;
 import eservice.business.services.StatusService;
+import eservice.business.services.UpdatableClient;
 import eservice.business.services.UpdatableRegistration;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -19,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Objects;
 
@@ -77,7 +80,11 @@ public class RegistrationController implements ChangeListener<Registration> {
     private TextField bodyField;
     @FXML
     private TextField engineVolumeField;
+    @FXML
+    private TextField currentMileageField;
 
+    @FXML
+    private Button verifyMileageButton;
 
     @FXML
     private Button cancelChangesButton;
@@ -86,6 +93,7 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     private boolean init = true;
     private final StatusService statusService = new StatusService();
+    private Mileage currentMileage;
 
     public void set(UpdatableRegistration updatableRegistration, RegistrationsService registrationsService) {
         this.updatableRegistration = updatableRegistration;
@@ -135,6 +143,7 @@ public class RegistrationController implements ChangeListener<Registration> {
         endMinutesBox.valueProperty().addListener(this::endRegistrationMinuteChanged);
         typeOfWorksBox.valueProperty().addListener(this::typeOfWorksBoxChanged);
         costField.textProperty().addListener(this::costChanged);
+        currentMileageField.textProperty().addListener(this::mileageFieldChanged);
     }
 
     private ZonedDateTime getZonedDateTime(Timestamp timestamp) {
@@ -158,6 +167,20 @@ public class RegistrationController implements ChangeListener<Registration> {
         } else if (!init) {
             endDatePicker.setValue(null);
         }
+
+        Client client = registration.getClient();
+        if (client != null) {
+            Car car = client.getCar(registration.getCarId());
+            if (car != null) {
+                if (car.getMileage() != null) {
+                    car.getMileage().stream().max(Comparator.comparing(Mileage::getDate)).ifPresent(x -> {
+                        currentMileage = x;
+                        currentMileageField.setText("" + x.getValue());
+                        verifyMileageButton.setDisable(x.getVerified());
+                    });
+                }
+            }
+        }
     }
 
     private void setFields(Registration registration) {
@@ -171,7 +194,6 @@ public class RegistrationController implements ChangeListener<Registration> {
             patronymicField.setText(client.getPatronymic());
             phoneField.setText(client.getPhoneNumber());
             emailField.setText(client.getEmail());
-
             Car car = client.getCar(registration.getCarId());
             if (car != null) {
                 markField.setText(car.getMark());
@@ -368,7 +390,8 @@ public class RegistrationController implements ChangeListener<Registration> {
         if (!init && (typeOfWorksChanged() ||
                 costFieldChanged() ||
                 dateChanged() ||
-                endDateChanged())) {
+                endDateChanged() ||
+                mileageChanged())) {
             editing = true;
             setEditable(true);
             return;
@@ -378,10 +401,13 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private boolean typeOfWorksChanged() {
-        return !Objects.equals(updatableRegistration.getRegistration().getTypeOfWorks(), typeOfWorksBox.getSelectionModel().getSelectedItem());
+        return false; //!Objects.equals(updatableRegistration.getRegistration().getTypeOfWorks(), typeOfWorksBox.getSelectionModel().getSelectedItem());
     }
 
     private boolean costFieldChanged() {
+        if(updatableRegistration.getRegistration().getCost() == null && (costField.getText() == null || costField.getText().isBlank())) {
+            return false;
+        }
         return !Objects.equals(String.valueOf(updatableRegistration.getRegistration().getCost()), costField.getText());
     }
 
@@ -398,8 +424,30 @@ public class RegistrationController implements ChangeListener<Registration> {
                                 !Objects.equals(getZonedDateTime(updatableRegistration.getRegistration().getTimeOfWorks()).toLocalTime().getHour(), endHourBox.getSelectionModel().getSelectedIndex() + 8) ||
                                 !Objects.equals(getZonedDateTime(updatableRegistration.getRegistration().getTimeOfWorks()).toLocalTime().getMinute(), endMinutesBox.getSelectionModel().getSelectedIndex()));
     }
+    private boolean mileageChanged() {
+        return !Objects.equals(String.valueOf(currentMileage.getValue()), currentMileageField.getText()) || verifyMileageButton.isDisable();
+    }
 
     private void typeOfWorksBoxChanged(ObservableValue<? extends String> observableValue, String oldType, String newType) {
+        checkChanges();
+    }
+
+    private void mileageFieldChanged(ObservableValue<? extends String> observableValue, String oldMileage, String newMileage) {
+        if (newMileage == null || newMileage.equals("")) {
+            currentMileageField.setText("0");
+            checkChanges();
+            return;
+        }
+        try {
+            Integer newValue = Integer.parseInt(newMileage);
+            verifyMileageButton.setDisable(true);
+            if (!String.valueOf(newValue).equals(newMileage)) {
+                currentMileageField.setText(String.valueOf(newValue));
+            }
+            checkChanges();
+        } catch (NumberFormatException ex) {
+            currentMileageField.setText(oldMileage);
+        }
         checkChanges();
     }
 
@@ -415,16 +463,21 @@ public class RegistrationController implements ChangeListener<Registration> {
         }
         return list;
     }
+    @FXML
+    private void verifyMileage() {
+        verifyMileageButton.setDisable(true);
+        checkChanges();
+    }
 
     @FXML
     private void saveChanges() {
         setEditable(false);
         System.out.println(endDatePicker.getValue());
         if (costFieldChanged()) {
-            if (!(costField.getText() == null || costField.getText().equals(""))) {
+            if (!(costField.getText() == null || costField.getText().isBlank())) {
                 updatableRegistration.setCost(Double.parseDouble(costField.getText()));
             } else {
-                updatableRegistration.setCost(0d);
+                updatableRegistration.setCost(null);
             }
         }
         if (typeOfWorksChanged()) {
@@ -442,6 +495,13 @@ public class RegistrationController implements ChangeListener<Registration> {
                     .withHour(endHourBox.getSelectionModel().getSelectedIndex() + 8)
                     .withMinute(endMinutesBox.getSelectionModel().getSelectedIndex());
             updatableRegistration.setTimeOfWorks(Timestamp.of(Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant())));
+        }
+        if(mileageChanged()) {
+            if(!Objects.equals(String.valueOf(currentMileage.getValue()), currentMileageField.getText())) {
+                updatableRegistration.addMileage(new Mileage(Timestamp.now(), true, Integer.parseInt(currentMileageField.getText())));
+            } else if (verifyMileageButton.isDisable()) {
+                updatableRegistration.verify(currentMileage);
+            }
         }
         updatableRegistration.update();
 

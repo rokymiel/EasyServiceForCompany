@@ -9,6 +9,7 @@ import com.google.cloud.firestore.annotation.PropertyName;
 import com.google.firebase.cloud.FirestoreClient;
 import com.sun.javafx.binding.ExpressionHelper;
 import eservice.business.core.Client;
+import eservice.business.core.Mileage;
 import eservice.business.core.Registration;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -90,6 +91,15 @@ public class UpdatableRegistration {
             }
             isFirst = false;
         });
+    }
+
+    public void verify(Mileage mileage) {
+        mileage.setVerified(true);
+        client.verify(mileage, registration.getValue().getCarId());
+    }
+
+    public void addMileage(Mileage mileage) {
+        client.addMileage(mileage, registration.getValue().getCarId());
     }
 
     private UpdatableClient client;
