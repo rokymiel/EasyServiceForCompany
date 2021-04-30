@@ -3,6 +3,7 @@ package eservice.business.services;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentChange;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
 import com.google.firebase.cloud.FirestoreClient;
 import eservice.business.core.Car;
 import eservice.business.core.Registration;
@@ -12,13 +13,16 @@ import java.util.stream.Collectors;
 
 public class RegistrationsService implements RegistrationsServiceable {
     private final Firestore db = FirestoreClient.getFirestore();
-    private final CollectionReference reference;
+    private final CollectionReference fullReference;
+    private final Query reference;
     private final NotificationsListener<String> registrationsListener;
     private final Set<String> ids;
 
-    public RegistrationsService(NotificationsListener<String> registrationsListener) {
+    public RegistrationsService(String serviceId, NotificationsListener<String> registrationsListener) {
         this.registrationsListener = registrationsListener;
-        reference = db.collection("registrations");
+        System.out.println(serviceId);
+        fullReference = db.collection("registrations");
+        reference = fullReference.whereEqualTo("service_id", serviceId);
         ids = new HashSet<>();
         reference.addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
@@ -68,11 +72,11 @@ public class RegistrationsService implements RegistrationsServiceable {
 
     @Override
     public void update(Registration registration) {
-        reference.document(registration.getId()).set(registration);//.update(registration.getChangesFields());
+        fullReference.document(registration.getId()).set(registration);//.update(registration.getChangesFields());
     }
 
     public void add(Registration registration) {
-        reference.add(registration);
+        fullReference.add(registration);
     }
 
     @Override

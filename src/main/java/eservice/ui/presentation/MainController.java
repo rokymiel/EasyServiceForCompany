@@ -67,6 +67,11 @@ public class MainController {
 
     ObservableList<UpdatableRegistration> registrations = FXCollections.observableArrayList();
     ObservableList<UpdatableRegistration> newRegistrations = FXCollections.observableArrayList();
+    private String serviceId;
+
+    public MainController(String serviceId) {
+        this.serviceId = serviceId;
+    }
 
     RegistrationsService registrationsService;
     final StatusService statusService = new StatusService();
@@ -75,7 +80,7 @@ public class MainController {
     void initialize() {
         System.out.println("AAAA");
 
-        registrationsService = new RegistrationsService(new NotificationsListener<>() {
+        registrationsService = new RegistrationsService(serviceId, new NotificationsListener<>() {
             @Override
             public void add(String item) {
                 System.out.println("AddListItem");

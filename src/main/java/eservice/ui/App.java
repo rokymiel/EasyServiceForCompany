@@ -4,6 +4,7 @@ package eservice.ui;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import eservice.ui.presentation.MainController;
 import eservice.ui.presentation.RegistrationController;
 import eservice.ui.presentation.ServiceRegistrationController;
 import javafx.application.Application;
@@ -24,9 +25,6 @@ public class App extends Application {
                 .build();
         FirebaseApp.initializeApp(options);
 
-
-
-        //Parent root = FXMLLoader.load(getClass().getResource("/MainPage.fxml"));
         Parent root;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/ServiceRegistrationPage.fxml"));
@@ -37,9 +35,13 @@ public class App extends Application {
         controller.whenLogin = code -> {
             FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("/MainPage.fxml"));
             try {
+                MainController mainController = new MainController(code);
+                mainLoader.setController(mainController);
+
                 Parent rootMain = mainLoader.load();
+
                 Scene scene = new Scene(rootMain, 1000, 800);
-                stage.setTitle("FXML Menu Frame");
+                stage.setTitle("");
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
@@ -47,10 +49,9 @@ public class App extends Application {
             }
         };
 
-//
         Scene scene = new Scene(root, 500, 250);
 
-        stage.setTitle("FXML Menu Frame");
+        stage.setTitle("Вход");
         stage.setScene(scene);
         stage.show();
     }
