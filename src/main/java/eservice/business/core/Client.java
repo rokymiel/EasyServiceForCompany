@@ -26,6 +26,7 @@ public class Client {
     @PropertyName(ClientFiled.DATE_OF_BIRTH)
     private Timestamp dateOfBirth;
     private List<Car> cars = new ArrayList<>();
+    private List<Token> tokens = new ArrayList<>();
     @PropertyName(ClientFiled.REGISTRATIONS)
     private List<String> registrations;
 
@@ -39,7 +40,7 @@ public class Client {
 //        this.cars = cars;
     }
 
-    private Client(String id, String name, String surname, String patronymic, String phoneNumber, String email, Timestamp dateOfBirth, List<Car> cars, List<String> registrations) {
+    private Client(String id, String name, String surname, String patronymic, String phoneNumber, String email, Timestamp dateOfBirth, List<Car> cars, List<Token> tokens, List<String> registrations) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -47,6 +48,7 @@ public class Client {
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.cars = cars;
+        this.tokens = tokens;
         this.registrations = registrations;
         this.email = email;
     }
@@ -105,6 +107,15 @@ public class Client {
     public List<Car> getCars() {
         return cars;
     }
+    public List<Token> getTokens() {
+        return tokens;
+    }
+    public void addToken(Token token) {
+        tokens.add(token);
+    }
+    public void removeToken(Token token) {
+        tokens.remove(token);
+    }
 
     public Car getCar(String id) {
         var car = cars.stream().filter(x -> x.getId().equals(id)).findFirst();
@@ -153,7 +164,7 @@ public class Client {
 
     @Override
     public Object clone() {
-        return new Client(id, name, surname, patronymic, phoneNumber, email, dateOfBirth, cars, registrations);
+        return new Client(id, name, surname, patronymic, phoneNumber, email, dateOfBirth, cars, tokens, registrations);
     }
     //        this.cars = cars;
 //    }

@@ -6,6 +6,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import eservice.business.core.Car;
 import eservice.business.core.Client;
 import eservice.business.core.Mileage;
+import eservice.business.core.Token;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
@@ -42,6 +43,7 @@ public class UpdatableClient {
                     case ADDED:
                         client.set(documentSnapshots.toObject(Client.class));
                         listenCars();
+                        listenTokens();
                         this.clientListener.ifPresent(x -> x.add(client.getValue()));
                         break;
                     case MODIFIED:
@@ -64,7 +66,7 @@ public class UpdatableClient {
     }
 
     private void listenCars() {
-        reference.collection("cars").addSnapshotListener(((queryDocumentSnapshots, e) -> {
+        reference.collection("cars").addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
                 return;
             }
@@ -98,7 +100,34 @@ public class UpdatableClient {
                     }
                 }
             }
-        }));
+        });
+    }
+
+    private void listenTokens() {
+        reference.collection("tokens").addSnapshotListener((queryDocumentSnapshots, e) -> {
+            if (e != null) {
+                return;
+            }
+            System.out.println("TOOOOOKKK");
+            if (queryDocumentSnapshots != null) {
+                List<DocumentChange> changeList = queryDocumentSnapshots.getDocumentChanges();
+                for (DocumentChange document : changeList) {
+                    Token token;
+                    System.out.println(document.getDocument().getData());
+                    switch (document.getType()) {
+                        case ADDED:
+                            token = document.getDocument().toObject(Token.class);
+                            System.out.println(token);
+                            client.getValue().addToken(token);
+                            break;
+                        case REMOVED:
+                            token = document.getDocument().toObject(Token.class);
+                            client.getValue().removeToken(token);
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     private ObjectStatus getStatus(DocumentSnapshot documentSnapshot) {

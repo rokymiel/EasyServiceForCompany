@@ -78,6 +78,29 @@ public class StatusService {
         }
         return null;
     }
+
+    public String getMessageFormat(String status) {
+        StringBuilder format = new StringBuilder();
+        switch (status) {
+            case "accepted":
+            case "canceled":
+            case "denied":
+                format.append("Уведомляем вас, что ваша запись на %s %s ");
+                format.append(getCurrent(status).toLowerCase());
+                return format.toString();
+            case "new":
+                format.append("Уведомляем вас, что ваша запись на %s %s переведена в статус\"");
+                format.append(getCurrent(status).toLowerCase());
+                format.append("\"");
+                return format.toString();
+            case "in_progress":
+            case "completed":
+                format.append("Уведомляем вас, что  по вашей записи на %s %s ");
+                format.append(getCurrent(status).toLowerCase());
+                return format.toString();
+        }
+        return null;
+    }
 }
 //denied
 //        new

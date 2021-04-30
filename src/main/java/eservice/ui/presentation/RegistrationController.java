@@ -1,10 +1,11 @@
 package eservice.ui.presentation;
 
 import com.google.cloud.Timestamp;
-import eservice.business.core.Car;
-import eservice.business.core.Client;
-import eservice.business.core.Mileage;
-import eservice.business.core.Registration;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import eservice.business.core.*;
 import eservice.business.services.RegistrationsService;
 import eservice.business.services.StatusService;
 import eservice.business.services.UpdatableClient;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.media.MediaPlayer;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -28,6 +31,8 @@ import java.util.Objects;
 public class RegistrationController implements ChangeListener<Registration> {
     private UpdatableRegistration updatableRegistration;
     private RegistrationsService registrationsService;
+    String pattern = "dd.MM.yyyy HH:mm";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
     @FXML
     private ComboBox<String> typeOfWorksBox;
@@ -258,21 +263,56 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     @FXML
     public void onNextClicked() {
-        updatableRegistration.setStatus(statusService.getNextStatus(status));
+        String newStatus = statusService.getNextStatus(status);
+        updatableRegistration.setStatus(newStatus);
         updatableRegistration.update();
+        Registration registration = updatableRegistration.getRegistration();
+        if (registration == null) return;
+        Client client = registration.getClient();
+        if (client == null) return;
+        sendNotification(newStatus, registration, client);
     }
 
     @FXML
     public void onPreviousClicked() {
+        String newStatus = statusService.getNextStatus(status);
         updatableRegistration.setStatus(statusService.getPreviousStatus(status));
         updatableRegistration.update();
+        Registration registration = updatableRegistration.getRegistration();
+        if (registration == null) return;
+        Client client = registration.getClient();
+        if (client == null) return;
+        sendNotification(newStatus, registration, client);
 
     }
 
     @FXML
     public void onCancelClicked() {
+        String newStatus = statusService.getNextStatus(status);
         updatableRegistration.setStatus(statusService.getCancellationStatus(status));
         updatableRegistration.update();
+        Registration registration = updatableRegistration.getRegistration();
+        if (registration == null) return;
+        Client client = registration.getClient();
+        if (client == null) return;
+        sendNotification(newStatus, registration, client);
+    }
+
+    private void sendNotification(String newStatus, Registration registration, Client client) {
+        for (Token token : client.getTokens()) {
+            System.out.println("TOKEN "+token.getToken());
+            Message message = Message.builder()
+                    .setNotification(Notification.builder()
+                            .setTitle("Изменен статус записи")
+                            .setBody(String.format(statusService.getMessageFormat(newStatus), simpleDateFormat.format(registration.getDateOfRegistration().toDate()), registration.getTypeOfWorks()))
+                            .build()).setToken(token.getToken())
+                    .build();
+            try {
+                FirebaseMessaging.getInstance().send(message);
+            } catch (FirebaseMessagingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void endRegistrationDateChanged(ObservableValue<? extends LocalDate> observableValue, LocalDate oldDate, LocalDate newDate) {
@@ -405,7 +445,7 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private boolean costFieldChanged() {
-        if(updatableRegistration.getRegistration().getCost() == null && (costField.getText() == null || costField.getText().isBlank())) {
+        if (updatableRegistration.getRegistration().getCost() == null && (costField.getText() == null || costField.getText().isBlank())) {
             return false;
         }
         return !Objects.equals(String.valueOf(updatableRegistration.getRegistration().getCost()), costField.getText());
@@ -424,6 +464,7 @@ public class RegistrationController implements ChangeListener<Registration> {
                                 !Objects.equals(getZonedDateTime(updatableRegistration.getRegistration().getTimeOfWorks()).toLocalTime().getHour(), endHourBox.getSelectionModel().getSelectedIndex() + 8) ||
                                 !Objects.equals(getZonedDateTime(updatableRegistration.getRegistration().getTimeOfWorks()).toLocalTime().getMinute(), endMinutesBox.getSelectionModel().getSelectedIndex()));
     }
+
     private boolean mileageChanged() {
         return !Objects.equals(String.valueOf(currentMileage.getValue()), currentMileageField.getText()) || verifyMileageButton.isDisable();
     }
@@ -463,6 +504,7 @@ public class RegistrationController implements ChangeListener<Registration> {
         }
         return list;
     }
+
     @FXML
     private void verifyMileage() {
         verifyMileageButton.setDisable(true);
@@ -496,8 +538,8 @@ public class RegistrationController implements ChangeListener<Registration> {
                     .withMinute(endMinutesBox.getSelectionModel().getSelectedIndex());
             updatableRegistration.setTimeOfWorks(Timestamp.of(Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant())));
         }
-        if(mileageChanged()) {
-            if(!Objects.equals(String.valueOf(currentMileage.getValue()), currentMileageField.getText())) {
+        if (mileageChanged()) {
+            if (!Objects.equals(String.valueOf(currentMileage.getValue()), currentMileageField.getText())) {
                 updatableRegistration.addMileage(new Mileage(Timestamp.now(), true, Integer.parseInt(currentMileageField.getText())));
             } else if (verifyMileageButton.isDisable()) {
                 updatableRegistration.verify(currentMileage);

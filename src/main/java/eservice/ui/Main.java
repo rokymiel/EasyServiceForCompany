@@ -2,29 +2,18 @@ package eservice.ui;
 
 import com.google.api.gax.paging.Page;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import eservice.business.core.Car;
-import eservice.business.core.Mileage;
-import eservice.business.services.ClientsService;
 import eservice.business.services.NotificationsListener;
-import eservice.business.services.UpdatableClient;
-import javafx.beans.binding.NumberBinding;
-import javafx.beans.property.SimpleIntegerProperty;
 
 import java.io.IOException;
-import java.util.List;
 
 public class Main implements NotificationsListener {
     public static void main(String[] args) throws IOException, FirebaseMessagingException {

@@ -5,13 +5,11 @@ import com.google.cloud.firestore.DocumentChange;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.firebase.cloud.FirestoreClient;
-import eservice.business.core.Car;
 import eservice.business.core.Registration;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class RegistrationsService implements RegistrationsServiceable {
+public class RegistrationsService {
     private final Firestore db = FirestoreClient.getFirestore();
     private final CollectionReference fullReference;
     private final Query reference;
@@ -48,40 +46,4 @@ public class RegistrationsService implements RegistrationsServiceable {
 
     }
 
-    @Override
-    public List<UpdatableRegistration> getRegistrations(NotificationsListener<Registration> registrationListener) {
-        return ids.stream().map(x -> new UpdatableRegistration(x, registrationListener)).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<String> getRegistrations() {
-        return new ArrayList<>(ids);
-    }
-
-    @Override
-    public void accept(Registration registration) {
-        registration.setStatus("accepted");
-        update(registration);
-    }
-
-    @Override
-    public void deny(Registration registration) {
-        registration.setStatus("denied");
-        update(registration);
-    }
-
-    @Override
-    public void update(Registration registration) {
-        fullReference.document(registration.getId()).set(registration);//.update(registration.getChangesFields());
-    }
-
-    public void add(Registration registration) {
-        fullReference.add(registration);
-    }
-
-    @Override
-    public void finish(Registration registration) {
-        registration.setStatus("done");
-        update(registration);
-    }
 }
