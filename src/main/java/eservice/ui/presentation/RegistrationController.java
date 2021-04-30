@@ -1,10 +1,7 @@
 package eservice.ui.presentation;
 
 import com.google.cloud.Timestamp;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.FirebaseMessagingException;
-import com.google.firebase.messaging.Message;
-import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.*;
 import eservice.business.core.*;
 import eservice.business.services.RegistrationsService;
 import eservice.business.services.StatusService;
@@ -275,7 +272,7 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     @FXML
     public void onPreviousClicked() {
-        String newStatus = statusService.getNextStatus(status);
+        String newStatus = statusService.getPreviousStatus(status);
         updatableRegistration.setStatus(statusService.getPreviousStatus(status));
         updatableRegistration.update();
         Registration registration = updatableRegistration.getRegistration();
@@ -288,7 +285,7 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     @FXML
     public void onCancelClicked() {
-        String newStatus = statusService.getNextStatus(status);
+        String newStatus = statusService.getCancellationStatus(status);
         updatableRegistration.setStatus(statusService.getCancellationStatus(status));
         updatableRegistration.update();
         Registration registration = updatableRegistration.getRegistration();
@@ -305,7 +302,7 @@ public class RegistrationController implements ChangeListener<Registration> {
                     .setNotification(Notification.builder()
                             .setTitle("Изменен статус записи")
                             .setBody(String.format(statusService.getMessageFormat(newStatus), simpleDateFormat.format(registration.getDateOfRegistration().toDate()), registration.getTypeOfWorks()))
-                            .build()).setToken(token.getToken())
+                            .build()).setApnsConfig(ApnsConfig.builder().setAps(Aps.builder().setSound("default").build()).build()).setToken(token.getToken())
                     .build();
             try {
                 FirebaseMessaging.getInstance().send(message);
