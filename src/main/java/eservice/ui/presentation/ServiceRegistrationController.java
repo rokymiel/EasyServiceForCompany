@@ -1,5 +1,7 @@
 package eservice.ui.presentation;
 
+import eservice.business.services.AutoservicesService;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -15,14 +17,15 @@ public class ServiceRegistrationController {
     private Button loginButton;
 
     public Consumer<String> whenLogin;
-
+    private AutoservicesService autoservicesService;
 
     @FXML
     void initialize() {
+        autoservicesService = new AutoservicesService();
         codeTextField.textProperty().addListener(this::mileageFieldChanged);
     }
 
-    private void mileageFieldChanged(ObservableValue<? extends String> observableValue, String oldCode, String newCode){
+    private void mileageFieldChanged(ObservableValue<? extends String> observableValue, String oldCode, String newCode) {
         if (newCode == null || newCode.isBlank()) {
             loginButton.setVisible(false);
             return;
@@ -31,14 +34,21 @@ public class ServiceRegistrationController {
     }
 
 
-
     @FXML
     private void login() {
         String code = codeTextField.getText();
-        if(whenLogin != null) {
-            whenLogin.accept(code);
-        }
+        loginButton.setDisable(true);
+        autoservicesService.getService(code, exist -> {
+            Platform.runLater(() -> {
+                if (exist) {
+                    if (whenLogin != null) {
+                        whenLogin.accept(code);
+                    }
+                } else {
+                    loginButton.setDisable(false);
+                }
+            });
+
+        });
     }
-
-
 }
