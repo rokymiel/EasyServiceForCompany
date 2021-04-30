@@ -28,7 +28,7 @@
                </font>
             </Label>
             <TextField fx:id="codeTextField" maxHeight="-Infinity" maxWidth="-Infinity" prefWidth="350.0" promptText="Введите ключ доступа" GridPane.rowIndex="1" />
-            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" text="Войти" GridPane.rowIndex="2" />
+            <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" text="Войти" visible="false" GridPane.rowIndex="2" />
          </children>
       </GridPane>
    </children>
