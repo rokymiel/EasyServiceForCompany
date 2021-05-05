@@ -41,7 +41,7 @@ public class ServiceRegistrationController {
         loginButton.setDisable(true);
         autoservicesService.getService(code, service -> {
             Platform.runLater(() -> {
-                if (service !=null ) {
+                if (service != null) {
                     if (whenLogin != null) {
                         whenLogin.accept(service);
                     }

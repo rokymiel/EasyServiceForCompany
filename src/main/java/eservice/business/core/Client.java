@@ -35,7 +35,6 @@ public class Client {
         this.surname = surname;
         this.patronymic = patronymic;
         this.phoneNumber = phoneNumber;
-//        this.cars = cars;
     }
 
     private Client(String id, String name, String surname, String patronymic, String phoneNumber, String email, Timestamp dateOfBirth, List<Car> cars, List<Token> tokens, List<String> registrations) {
@@ -51,9 +50,7 @@ public class Client {
         this.email = email;
     }
 
-    public Client() {
-
-    }
+    public Client() { }
 
     public String getId() {
         return id;
@@ -93,24 +90,18 @@ public class Client {
         return registrations;
     }
 
-//    @PropertyName(ClientFiled.REGISTRATIONS)
-//    public void setRegistrationsFromReference(List<DocumentReference> documentReference) {
-//        System.out.println("AAAA");
-//        for (DocumentReference document : documentReference) {
-//            document.get().addListener();
-//        }
-//        this.registrations = null;
-//    }
-
     public List<Car> getCars() {
         return cars;
     }
+
     public List<Token> getTokens() {
         return tokens;
     }
+
     public void addToken(Token token) {
         tokens.add(token);
     }
+
     public void removeToken(Token token) {
         tokens.remove(token);
     }
@@ -164,8 +155,6 @@ public class Client {
     public Object clone() {
         return new Client(id, name, surname, patronymic, phoneNumber, email, dateOfBirth, cars, tokens, registrations);
     }
-    //        this.cars = cars;
-//    }
 
     public static final class ClientField {
         public final static String NAME = "name";

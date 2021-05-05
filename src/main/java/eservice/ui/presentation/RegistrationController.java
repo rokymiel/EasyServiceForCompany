@@ -5,7 +5,6 @@ import com.google.firebase.messaging.*;
 import eservice.business.core.*;
 import eservice.business.services.RegistrationsService;
 import eservice.business.services.StatusService;
-import eservice.business.services.UpdatableClient;
 import eservice.business.services.UpdatableRegistration;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -14,7 +13,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.media.MediaPlayer;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -105,14 +103,12 @@ public class RegistrationController implements ChangeListener<Registration> {
         updatableRegistration.getValue().addListener(this);
         setListeners();
         setFields(updatableRegistration.getRegistration());
-        System.out.println("SAST");
         init = false;
 
     }
 
     @FXML
     void initialize() {
-        System.out.println("init");
         ObservableList<String> range = getClockTime(8, 22);
         ObservableList<String> range2 = getClockTime(0, 59);
 
@@ -130,7 +126,6 @@ public class RegistrationController implements ChangeListener<Registration> {
 
     @Override
     public void changed(ObservableValue<? extends Registration> observableValue, Registration registration, Registration newValue) {
-        System.out.println("LIIIIIIIISTEEEEENNNNNN");
         Platform.runLater(() -> {
             if (newValue != null) {
                 setFields(newValue);
@@ -197,7 +192,7 @@ public class RegistrationController implements ChangeListener<Registration> {
         if (client != null) {
             surnameField.setText(client.getSurname());
             nameField.setText(client.getName());
-            patronymicField.setText(client.getPatronymic());
+            patronymicField.setText(client.getPatronymic() == null ? "" : client.getPatronymic());
             phoneField.setText(client.getPhoneNumber());
             emailField.setText(client.getEmail());
             Car car = client.getCar(registration.getCarId());
@@ -214,7 +209,6 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private void registrationDateChanged(ObservableValue<? extends LocalDate> observableValue, LocalDate oldDate, LocalDate newDate) {
-        System.out.println("AA");
         if (newDate == null) {
             datePicker.setValue(oldDate);
             return;
@@ -226,8 +220,6 @@ public class RegistrationController implements ChangeListener<Registration> {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
-                System.out.println("AAAaaA");
-                System.out.println(newDate);
                 setDisable(empty || date.compareTo(newDate) < 0);
             }
         });
@@ -309,12 +301,13 @@ public class RegistrationController implements ChangeListener<Registration> {
                     .build();
             try {
                 FirebaseMessaging.getInstance().send(message);
-            } catch (FirebaseMessagingException ignored) { }
+            } catch (FirebaseMessagingException ignored) {
+            }
         }
     }
 
     private void sendNotification(String newStatus, Registration registration, Client client) {
-        Platform.runLater(()-> {
+        Platform.runLater(() -> {
             sendNotification(client, "Изменен статус записи", String.format(statusService.getMessageFormat(newStatus), simpleDateFormat.format(registration.getDateOfRegistration().toDate()), registration.getTypeOfWorks()));
         });
     }
@@ -349,7 +342,6 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private void registrationHourChanged(ObservableValue<? extends String> observableValue, String oldHour, String newHour) {
-        System.out.println("LOX2");
         if (endHourBox.getSelectionModel().getSelectedIndex() >= 0 && endMinutesBox.getSelectionModel().getSelectedIndex() >= 0) {
             if (Objects.equals(datePicker.getValue(), endDatePicker.getValue()) &&
                     endHourBox.getSelectionModel().getSelectedIndex() + 8 <= Integer.parseInt(newHour)) {
@@ -364,7 +356,6 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private void registrationMinuteChanged(ObservableValue<? extends String> observableValue, String oldMinute, String newMinute) {
-        System.out.println("LOX");
         if (endHourBox.getSelectionModel().getSelectedIndex() >= 0 && endMinutesBox.getSelectionModel().getSelectedIndex() >= 0) {
             if (Objects.equals(datePicker.getValue(), endDatePicker.getValue()) &&
                     endHourBox.getSelectionModel().getSelectedIndex() <= hourBox.getSelectionModel().getSelectedIndex() &&
@@ -381,7 +372,6 @@ public class RegistrationController implements ChangeListener<Registration> {
             return;
         }
         if (endDatePicker.getValue() == null) {
-            System.out.println("HEH");
             Platform.runLater(() -> endHourBox.getSelectionModel().clearSelection());
             return;
         }
@@ -414,7 +404,6 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private void costChanged(ObservableValue<? extends String> observableValue, String oldCost, String newCost) {
-        System.out.println("MMM");
         if (newCost == null || newCost.equals("")) {
             checkChanges();
             return;
@@ -518,7 +507,6 @@ public class RegistrationController implements ChangeListener<Registration> {
     @FXML
     private void saveChanges() {
         setEditable(false);
-        System.out.println(endDatePicker.getValue());
         if (costFieldChanged()) {
             if (!(costField.getText() == null || costField.getText().isBlank())) {
                 updatableRegistration.setCost(Double.parseDouble(costField.getText()));
@@ -530,7 +518,6 @@ public class RegistrationController implements ChangeListener<Registration> {
             updatableRegistration.setTypeOfWorks(typeOfWorksBox.getSelectionModel().getSelectedItem());
         }
         if (dateChanged()) {
-//            Date date = Date.from(datePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
             LocalDateTime dateTime = datePicker.getValue().atStartOfDay()
                     .withHour(hourBox.getSelectionModel().getSelectedIndex() + 8)
                     .withMinute(minutesBox.getSelectionModel().getSelectedIndex());
@@ -551,8 +538,8 @@ public class RegistrationController implements ChangeListener<Registration> {
         }
         Registration registration = updatableRegistration.getRegistration();
         Client client = registration.getClient();
-        Platform.runLater( () -> {
-            sendNotification(client, "Изменены детали записи",  String.format("Уведомляем вас, что произошли изменения в записи на %s", simpleDateFormat.format(registration.getDateOfRegistration().toDate())));
+        Platform.runLater(() -> {
+            sendNotification(client, "Изменены детали записи", String.format("Уведомляем вас, что произошли изменения в записи на %s", simpleDateFormat.format(registration.getDateOfRegistration().toDate())));
         });
         updatableRegistration.update();
 

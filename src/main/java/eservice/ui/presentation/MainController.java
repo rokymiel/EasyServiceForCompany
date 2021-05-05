@@ -8,13 +8,8 @@ import eservice.business.services.NotificationsListener;
 import eservice.business.services.RegistrationsService;
 import eservice.business.services.StatusService;
 import eservice.business.services.UpdatableRegistration;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,18 +19,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import jfxtras.icalendarfx.VCalendar;
-import jfxtras.scene.control.agenda.Agenda;
-import jfxtras.scene.control.agenda.icalendar.ICalendarAgenda;
 
-import java.awt.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Function;
@@ -78,14 +67,12 @@ public class MainController {
     RegistrationsService registrationsService;
     final StatusService statusService = new StatusService();
     private final Object locker = new Object();
+
     @FXML
     void initialize() {
-        System.out.println("AAAA");
-
         registrationsService = new RegistrationsService(service.getId(), new NotificationsListener<>() {
             @Override
             public void add(String item) {
-                System.out.println("AddListItem");
                 registrations.add(new UpdatableRegistration(item, new NotificationsListener<>() {
                     @Override
                     public void add(Object sender, Registration item) {
@@ -93,19 +80,13 @@ public class MainController {
                         synchronized (locker) {
                             if (Objects.equals(up.getRegistration().getStatus(), "new")) {
                                 newRegistrations.add(up);
-                                System.out.println("add from add");
-                                System.out.println(newRegistrations.size());
-                                System.out.println(up.getRegistration());
                                 up.getValue().addListener((observableValue, registration, newRegistration) -> {
                                     synchronized (locker) {
-                                        System.out.println("List");
                                         if (!registration.getStatus().equals("new") && newRegistration.getStatus().equals("new")) {
                                             newRegistrations.add(up);
-                                            System.out.println("add");
 
                                         } else if (registration.getStatus().equals("new") && !newRegistration.getStatus().equals("new")) {
                                             newRegistrations.remove(up);
-                                            System.out.println("remove");
 
                                         }
                                     }
@@ -127,10 +108,6 @@ public class MainController {
                 @Override
                 protected void updateItem(Registration item, boolean empty) {
                     super.updateItem(item, empty);
-                    System.out.println("Cellllllll");
-                    System.out.println(item);
-                    System.out.println(empty);
-                    System.out.println(newRegistrations.size());
                     this.setText(null);
                     this.setGraphic(null);
 
@@ -236,8 +213,6 @@ public class MainController {
             stage.setTitle("Запись в автосервис");
             stage.setScene(new Scene(root, 800, 800));
             stage.show();
-            // Hide this current window (if this is what you want)
-//            ((Node)(event.getSource())).getScene().getWindow().hide();
         } catch (IOException e) {
             e.printStackTrace();
         }

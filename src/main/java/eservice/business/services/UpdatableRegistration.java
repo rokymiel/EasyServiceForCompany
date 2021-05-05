@@ -5,7 +5,6 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
-import com.sun.javafx.binding.ExpressionHelper;
 import eservice.business.core.Mileage;
 import eservice.business.core.Registration;
 import javafx.beans.property.SimpleObjectProperty;
@@ -16,19 +15,14 @@ import java.util.Optional;
 
 
 public class UpdatableRegistration {
-//    private SimpleObjectProperty<Registration> registration = new SimpleObjectProperty<>(this, "registration");
-
     private SimpleObjectProperty<Registration> registration = new SimpleObjectProperty<>();
 
-    //    private
     private final String registrationId;
     private final Firestore db = FirestoreClient.getFirestore();
     private Optional<NotificationsListener<Registration>> registrationListener = Optional.empty();
-    private DocumentReference reference;
+    private final DocumentReference reference;
     private boolean isFirst = true;
 
-
-    private ExpressionHelper<Registration> helper = null;
 
     public UpdatableRegistration(String registrationId, NotificationsListener<Registration> registrationListener) {
         this.registrationId = registrationId;
@@ -44,34 +38,20 @@ public class UpdatableRegistration {
                     case ADDED:
                         Registration reg = documentSnapshots.toObject(Registration.class);
                         if (reg.getClientId() != null) {
-                            System.out.println(reg.getClientId());
                             client = new UpdatableClient(reg.getClientId(), (observableValue, client, newClient) -> {
                                 Registration re = (Registration) registration.getValue().clone();
-                                System.out.println("AAAAAASDADASD");
                                 re.setClient(newClient);
                                 registration.set(re);
                             });
                         }
-//                        Re observableRegistration = new ObservableRegistration();
-//                        client =  new UpdatableClient()
-                        System.out.println("SET");
 
                         registration.set(reg);
                         this.registrationListener.ifPresent(x -> x.add(this, reg));
-//                        registrationListener.add(registration.get());
                         break;
                     case MODIFIED:
-                        System.out.println("MOD");
                         Registration updatedRegistration = documentSnapshots.toObject(Registration.class);
                         updatedRegistration.setClient(registration.getValue().getClient());
-//                        registration.set(updatedRegistration);
-//                        registration.getValue().setSas("Asa");
-//                        registration.getValue().setDescription("SEEX");
-
                         registration.setValue(updatedRegistration);
-
-//                        registration.set(registration.getValue());
-//                        registrationListener.modify(registration.get());
                         break;
                     case REMOVED:
                         registration = null;

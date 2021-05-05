@@ -5,7 +5,6 @@ import com.google.cloud.firestore.DocumentChange;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.firebase.cloud.FirestoreClient;
-import eservice.business.core.Registration;
 
 import java.util.*;
 
@@ -18,7 +17,6 @@ public class RegistrationsService {
 
     public RegistrationsService(String serviceId, NotificationsListener<String> registrationsListener) {
         this.registrationsListener = registrationsListener;
-        System.out.println(serviceId);
         fullReference = db.collection("registrations");
         reference = fullReference.whereEqualTo("service_id", serviceId);
         ids = new HashSet<>();

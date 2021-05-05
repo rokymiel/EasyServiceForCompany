@@ -5,7 +5,6 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import eservice.ui.presentation.MainController;
-import eservice.ui.presentation.RegistrationController;
 import eservice.ui.presentation.ServiceRegistrationController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -55,6 +54,7 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
     public static void main(String[] args) {
         launch(args);
     }

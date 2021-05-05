@@ -102,9 +102,3 @@ public class StatusService {
         return null;
     }
 }
-//denied
-//        new
-//        accepted
-//        canceled
-//        in_progress
-//        completed

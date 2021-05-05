@@ -48,13 +48,11 @@ public class UpdatableClient {
                     case MODIFIED:
                         Client updatedClient = documentSnapshots.toObject(Client.class);
                         updatedClient.setCars(client.getValue().getCars());
-                        System.out.println(updatedClient);
                         client.set(updatedClient);
                         this.clientListener.ifPresent(x -> x.modify(client.getValue()));
                         break;
                     case REMOVED:
                         client = null;
-//                        clientListener.remove();
                         break;
                     case DO_NOT_EXIST:
                         break;
@@ -77,8 +75,6 @@ public class UpdatableClient {
                     switch (document.getType()) {
                         case ADDED:
                             car = document.getDocument().toObject(Car.class);
-                            System.out.println("CAR " + car.getCarName());
-                            System.out.println("getMileage " + car.getMileage());
                             upd = (Client) client.getValue().clone();
                             upd.addCar(car);
                             client.set(upd);
@@ -107,16 +103,13 @@ public class UpdatableClient {
             if (e != null) {
                 return;
             }
-            System.out.println("TOOOOOKKK");
             if (queryDocumentSnapshots != null) {
                 List<DocumentChange> changeList = queryDocumentSnapshots.getDocumentChanges();
                 for (DocumentChange document : changeList) {
                     Token token;
-                    System.out.println(document.getDocument().getData());
                     switch (document.getType()) {
                         case ADDED:
                             token = document.getDocument().toObject(Token.class);
-                            System.out.println(token);
                             client.getValue().addToken(token);
                             break;
                         case REMOVED:

@@ -12,16 +12,18 @@ public final class Mileage {
     private Integer value;
 
     public Mileage() {
-
     }
+
     @PropertyName("date")
     public Timestamp getDate() {
         return date;
     }
+
     @PropertyName("is_verified")
     public Boolean getVerified() {
         return isVerified;
     }
+
     @PropertyName("value")
     public Integer getValue() {
         return value;
