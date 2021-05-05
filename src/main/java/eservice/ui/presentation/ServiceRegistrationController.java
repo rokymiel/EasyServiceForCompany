@@ -1,5 +1,6 @@
 package eservice.ui.presentation;
 
+import eservice.business.core.Service;
 import eservice.business.services.AutoservicesService;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -16,7 +17,7 @@ public class ServiceRegistrationController {
     @FXML
     private Button loginButton;
 
-    public Consumer<String> whenLogin;
+    public Consumer<Service> whenLogin;
     private AutoservicesService autoservicesService;
 
     @FXML
@@ -38,11 +39,11 @@ public class ServiceRegistrationController {
     private void login() {
         String code = codeTextField.getText();
         loginButton.setDisable(true);
-        autoservicesService.getService(code, exist -> {
+        autoservicesService.getService(code, service -> {
             Platform.runLater(() -> {
-                if (exist) {
+                if (service !=null ) {
                     if (whenLogin != null) {
-                        whenLogin.accept(code);
+                        whenLogin.accept(service);
                     }
                 } else {
                     loginButton.setDisable(false);

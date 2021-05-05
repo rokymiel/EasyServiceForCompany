@@ -96,10 +96,12 @@ public class RegistrationController implements ChangeListener<Registration> {
     private boolean init = true;
     private final StatusService statusService = new StatusService();
     private Mileage currentMileage;
+    private Service service;
 
-    public void set(UpdatableRegistration updatableRegistration, RegistrationsService registrationsService) {
+    public void set(UpdatableRegistration updatableRegistration, RegistrationsService registrationsService, Service service) {
         this.updatableRegistration = updatableRegistration;
         this.registrationsService = registrationsService;
+        this.service = service;
         updatableRegistration.getValue().addListener(this);
         setListeners();
         setFields(updatableRegistration.getRegistration());
@@ -186,6 +188,8 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private void setFields(Registration registration) {
+        typeOfWorksBox.setItems(FXCollections.observableList(service.getWorkTypes()));
+        typeOfWorksBox.getSelectionModel().select(registration.getTypeOfWorks());
         setStatus(registration.getStatus());
         setEditableFields(registration);
         notesArea.setText(registration.getNotes());
@@ -295,21 +299,24 @@ public class RegistrationController implements ChangeListener<Registration> {
         sendNotification(newStatus, registration, client);
     }
 
-    private void sendNotification(String newStatus, Registration registration, Client client) {
+    private void sendNotification(Client client, String title, String body) {
         for (Token token : client.getTokens()) {
-            System.out.println("TOKEN "+token.getToken());
             Message message = Message.builder()
                     .setNotification(Notification.builder()
-                            .setTitle("Изменен статус записи")
-                            .setBody(String.format(statusService.getMessageFormat(newStatus), simpleDateFormat.format(registration.getDateOfRegistration().toDate()), registration.getTypeOfWorks()))
+                            .setTitle(title)
+                            .setBody(body)
                             .build()).setApnsConfig(ApnsConfig.builder().setAps(Aps.builder().setSound("default").build()).build()).setToken(token.getToken())
                     .build();
             try {
                 FirebaseMessaging.getInstance().send(message);
-            } catch (FirebaseMessagingException e) {
-                e.printStackTrace();
-            }
+            } catch (FirebaseMessagingException ignored) { }
         }
+    }
+
+    private void sendNotification(String newStatus, Registration registration, Client client) {
+        Platform.runLater(()-> {
+            sendNotification(client, "Изменен статус записи", String.format(statusService.getMessageFormat(newStatus), simpleDateFormat.format(registration.getDateOfRegistration().toDate()), registration.getTypeOfWorks()));
+        });
     }
 
     private void endRegistrationDateChanged(ObservableValue<? extends LocalDate> observableValue, LocalDate oldDate, LocalDate newDate) {
@@ -319,7 +326,7 @@ public class RegistrationController implements ChangeListener<Registration> {
                 endMinutesBox.getSelectionModel().clearSelection();
                 checkChanges();
             } else {
-                datePicker.setValue(oldDate);
+                endDatePicker.setValue(oldDate);
             }
             return;
         }
@@ -438,7 +445,7 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private boolean typeOfWorksChanged() {
-        return false; //!Objects.equals(updatableRegistration.getRegistration().getTypeOfWorks(), typeOfWorksBox.getSelectionModel().getSelectedItem());
+        return !Objects.equals(updatableRegistration.getRegistration().getTypeOfWorks(), typeOfWorksBox.getSelectionModel().getSelectedItem());
     }
 
     private boolean costFieldChanged() {
@@ -520,7 +527,7 @@ public class RegistrationController implements ChangeListener<Registration> {
             }
         }
         if (typeOfWorksChanged()) {
-//            updatableRegistration.setTypeOfWorks(typeOfWorksBox.getSelectionModel().getSelectedItem());
+            updatableRegistration.setTypeOfWorks(typeOfWorksBox.getSelectionModel().getSelectedItem());
         }
         if (dateChanged()) {
 //            Date date = Date.from(datePicker.getValue().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
@@ -542,7 +549,13 @@ public class RegistrationController implements ChangeListener<Registration> {
                 updatableRegistration.verify(currentMileage);
             }
         }
+        Registration registration = updatableRegistration.getRegistration();
+        Client client = registration.getClient();
+        Platform.runLater( () -> {
+            sendNotification(client, "Изменены детали записи",  String.format("Уведомляем вас, что произошли изменения в записи на %s", simpleDateFormat.format(registration.getDateOfRegistration().toDate())));
+        });
         updatableRegistration.update();
+
 
     }
 

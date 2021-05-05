@@ -3,6 +3,7 @@ package eservice.ui.presentation;
 import eservice.business.core.Car;
 import eservice.business.core.Client;
 import eservice.business.core.Registration;
+import eservice.business.core.Service;
 import eservice.business.services.NotificationsListener;
 import eservice.business.services.RegistrationsService;
 import eservice.business.services.StatusService;
@@ -24,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import jfxtras.icalendarfx.VCalendar;
@@ -67,10 +69,10 @@ public class MainController {
 
     ObservableList<UpdatableRegistration> registrations = FXCollections.observableArrayList();
     ObservableList<UpdatableRegistration> newRegistrations = FXCollections.observableArrayList();
-    private String serviceId;
+    private Service service;
 
-    public MainController(String serviceId) {
-        this.serviceId = serviceId;
+    public MainController(Service service) {
+        this.service = service;
     }
 
     RegistrationsService registrationsService;
@@ -80,7 +82,7 @@ public class MainController {
     void initialize() {
         System.out.println("AAAA");
 
-        registrationsService = new RegistrationsService(serviceId, new NotificationsListener<>() {
+        registrationsService = new RegistrationsService(service.getId(), new NotificationsListener<>() {
             @Override
             public void add(String item) {
                 System.out.println("AddListItem");
@@ -197,11 +199,15 @@ public class MainController {
     private Node createDriverGraphic(Registration registration) {
 
         GridPane gridpane = new GridPane();
-
+        ColumnConstraints columnConstraints1 = new ColumnConstraints();
+        columnConstraints1.setMinWidth(60);
+        ColumnConstraints columnConstraints2 = new ColumnConstraints();
+        columnConstraints2.setMinWidth(60);
+        gridpane.getColumnConstraints().addAll(columnConstraints1, columnConstraints2);
         gridpane.setPadding(new Insets(5, 5, 5, 5));
-        gridpane.add(new Label("Машина"), 0, 0);   // столбец=1 строка=0
-        gridpane.add(new Label("Тип работ"), 0, 1);    // столбец=2 строка=0
-        gridpane.add(new Label("Дата"), 0, 2);   // столбец=1 строка=0
+        gridpane.add(new Label("Машина"), 0, 0);
+        gridpane.add(new Label("Тип работ"), 0, 1);
+        gridpane.add(new Label("Дата"), 0, 2);
         gridpane.setHgap(10);
         Client client = registration.getClient();
         if (client != null) {
@@ -209,7 +215,7 @@ public class MainController {
             if (car != null) {
                 gridpane.add(new Label(car.getCarName()), 1, 0);
             }
-            gridpane.add(new Label(registration.getTypeOfWorks()), 1, 1);    // столбец=2 строка=0
+            gridpane.add(new Label(registration.getTypeOfWorks()), 1, 1);
             gridpane.add(new Label(simpleDateFormat.format(registration.getDateOfRegistration().toDate())), 1, 2);   // столбец=1 строка=0
         }
 
@@ -225,7 +231,7 @@ public class MainController {
             root = loader.load();
 
             RegistrationController controller = loader.<RegistrationController>getController();
-            controller.set(registration, registrationsService);
+            controller.set(registration, registrationsService, service);
             Stage stage = new Stage();
             stage.setTitle("Запись в автосервис");
             stage.setScene(new Scene(root, 800, 800));

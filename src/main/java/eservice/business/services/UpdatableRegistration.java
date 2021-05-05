@@ -4,24 +4,15 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.annotation.Exclude;
-import com.google.cloud.firestore.annotation.PropertyName;
 import com.google.firebase.cloud.FirestoreClient;
 import com.sun.javafx.binding.ExpressionHelper;
-import eservice.business.core.Client;
 import eservice.business.core.Mileage;
 import eservice.business.core.Registration;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 
 public class UpdatableRegistration {
@@ -133,30 +124,30 @@ public class UpdatableRegistration {
     }
 
     public void setDateOfRegistration(Timestamp dateOfRegistration) {
-        changesFields.put(Registration.RegistrationFiled.DATE_OF_REGISTRATION, dateOfRegistration);
+        changesFields.put(Registration.RegistrationField.DATE_OF_REGISTRATION, dateOfRegistration);
     }
 
 
     public void setDescription(String description) {
-        changesFields.put(Registration.RegistrationFiled.DESCRIPTION, description);
+        changesFields.put(Registration.RegistrationField.DESCRIPTION, description);
     }
 
     public void setTypeOfWorks(String typeOfWorks) {
-        changesFields.put(Registration.RegistrationFiled.TYPE_OF_WORKS, typeOfWorks);
+        changesFields.put(Registration.RegistrationField.TYPE_OF_WORKS, typeOfWorks);
     }
 
     public void setCost(Double cost) {
-        changesFields.put(Registration.RegistrationFiled.COST, cost);
+        changesFields.put(Registration.RegistrationField.COST, cost);
     }
 
 
     public void setTimeOfWorks(Timestamp timeOfWorks) {
-        changesFields.put(Registration.RegistrationFiled.TIME_OF_WORKS, timeOfWorks);
+        changesFields.put(Registration.RegistrationField.TIME_OF_WORKS, timeOfWorks);
 
     }
 
     public void setStatus(String status) {
-        changesFields.put(Registration.RegistrationFiled.STATUS, status);
+        changesFields.put(Registration.RegistrationField.STATUS, status);
     }
 
     public void update() {

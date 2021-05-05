@@ -5,32 +5,30 @@ import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.Exclude;
 import com.google.cloud.firestore.annotation.PropertyName;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class Registration {
     @DocumentId
     private String id;
-    @PropertyName(RegistrationFiled.CLIENT_ID)
+    @PropertyName(RegistrationField.CLIENT_ID)
     private String clientId;
-    @PropertyName(RegistrationFiled.CAR_ID)
+    @PropertyName(RegistrationField.CAR_ID)
     private String carId;
-    @PropertyName(RegistrationFiled.DATE_OF_CREATION)
+    @PropertyName(RegistrationField.DATE_OF_CREATION)
     private Timestamp dateOfCreation;
-    @PropertyName(RegistrationFiled.DATE_OF_REGISTRATION)
+    @PropertyName(RegistrationField.DATE_OF_REGISTRATION)
     private Timestamp dateOfRegistration;
-    @PropertyName(RegistrationFiled.DESCRIPTION)
+    @PropertyName(RegistrationField.DESCRIPTION)
     private String description;
-    @PropertyName(RegistrationFiled.TYPE_OF_WORKS)
+    @PropertyName(RegistrationField.TYPE_OF_WORKS)
     private String typeOfWorks;
-    @PropertyName(RegistrationFiled.COST)
+    @PropertyName(RegistrationField.COST)
     private Double cost;
-    @PropertyName(RegistrationFiled.TIME_OF_WORKS)
+    @PropertyName(RegistrationField.TIME_OF_WORKS)
     private Timestamp timeOfWorks;
-    @PropertyName(RegistrationFiled.STATUS)
+    @PropertyName(RegistrationField.STATUS)
     private String status;
-    @PropertyName(RegistrationFiled.NOTES)
+    @PropertyName(RegistrationField.NOTES)
     private String notes;
     @Exclude
     private Client client;
@@ -75,22 +73,22 @@ public class Registration {
         return id;
     }
 
-    @PropertyName(RegistrationFiled.CLIENT_ID)
+    @PropertyName(RegistrationField.CLIENT_ID)
     public String getClientId() {
         return clientId;
     }
 
-    @PropertyName(RegistrationFiled.CAR_ID)
+    @PropertyName(RegistrationField.CAR_ID)
     public String getCarId() {
         return carId;
     }
 
-    @PropertyName(RegistrationFiled.DATE_OF_CREATION)
+    @PropertyName(RegistrationField.DATE_OF_CREATION)
     public Timestamp getDateOfCreation() {
         return dateOfCreation;
     }
 
-    @PropertyName(RegistrationFiled.DATE_OF_REGISTRATION)
+    @PropertyName(RegistrationField.DATE_OF_REGISTRATION)
     public Timestamp getDateOfRegistration() {
         return dateOfRegistration;
     }
@@ -100,7 +98,7 @@ public class Registration {
         this.dateOfRegistration = dateOfRegistration;
     }
 
-    @PropertyName(RegistrationFiled.DESCRIPTION)
+    @PropertyName(RegistrationField.DESCRIPTION)
     public String getDescription() {
         return description;
     }
@@ -110,7 +108,7 @@ public class Registration {
         this.description = description;
     }
 
-    @PropertyName(RegistrationFiled.TYPE_OF_WORKS)
+    @PropertyName(RegistrationField.TYPE_OF_WORKS)
     public String getTypeOfWorks() {
         return typeOfWorks;
     }
@@ -120,7 +118,7 @@ public class Registration {
         this.typeOfWorks = typeOfWorks;
     }
 
-    @PropertyName(RegistrationFiled.COST)
+    @PropertyName(RegistrationField.COST)
     public Double getCost() {
         return cost;
     }
@@ -130,7 +128,7 @@ public class Registration {
         this.cost = cost;
     }
 
-    @PropertyName(RegistrationFiled.TIME_OF_WORKS)
+    @PropertyName(RegistrationField.TIME_OF_WORKS)
     public Timestamp getTimeOfWorks() {
         return timeOfWorks;
     }
@@ -140,7 +138,7 @@ public class Registration {
         this.timeOfWorks = timeOfWorks;
     }
 
-    @PropertyName(RegistrationFiled.STATUS)
+    @PropertyName(RegistrationField.STATUS)
     public String getStatus() {
         return status;
     }
@@ -150,7 +148,7 @@ public class Registration {
         this.status = status;
     }
 
-    @PropertyName(RegistrationFiled.NOTES)
+    @PropertyName(RegistrationField.NOTES)
     public String getNotes() {
         return notes;
     }
@@ -212,7 +210,7 @@ public class Registration {
                 description, typeOfWorks, cost, timeOfWorks, status, notes, client);
     }
 
-    public static final class RegistrationFiled {
+    public static final class RegistrationField {
         public final static String ID = "id";
         public final static String CLIENT_ID = "client_id";
         public final static String CAR_ID = "car_id";
@@ -225,7 +223,7 @@ public class Registration {
         public final static String STATUS = "status";
         public final static String NOTES = "notes";
 
-        private RegistrationFiled() {
+        private RegistrationField() {
         }
     }
 }

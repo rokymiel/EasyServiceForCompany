@@ -1,6 +1,5 @@
 package eservice.business.services;
 
-import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
 import eservice.business.core.Car;
@@ -142,12 +141,12 @@ public class UpdatableClient {
 
     public synchronized void verify(Mileage mileage, String carId) {
         mileage.setVerified(true);
-        reference.collection("cars").document(carId).update(Map.of(Car.CarFiled.MILEAGE, client.getValue().getCar(carId).getMileage()));
+        reference.collection("cars").document(carId).update(Map.of(Car.CarField.MILEAGE, client.getValue().getCar(carId).getMileage()));
     }
 
     public synchronized void addMileage(Mileage mileage, String carId) {
         client.getValue().getCar(carId).addMileage(mileage);
-        reference.collection("cars").document(carId).update(Map.of(Car.CarFiled.MILEAGE, client.getValue().getCar(carId).getMileage()));
+        reference.collection("cars").document(carId).update(Map.of(Car.CarField.MILEAGE, client.getValue().getCar(carId).getMileage()));
     }
 
 

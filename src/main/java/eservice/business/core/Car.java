@@ -1,65 +1,63 @@
 package eservice.business.core;
 
-import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
 
 import java.util.List;
-import java.util.Map;
 
 public class Car {
     @DocumentId
     private String id;
-    @PropertyName(CarFiled.MARK)
+    @PropertyName(CarField.MARK)
     private String mark;
-    @PropertyName(CarFiled.MODEL)
+    @PropertyName(CarField.MODEL)
     private String model;
-    @PropertyName(CarFiled.GEAR)
+    @PropertyName(CarField.GEAR)
     private String gear;
-    @PropertyName(CarFiled.BODY)
+    @PropertyName(CarField.BODY)
     private String body;
-    @PropertyName(CarFiled.ENGINE_VOLUME)
+    @PropertyName(CarField.ENGINE_VOLUME)
     private Double engineVolume;
-    @PropertyName(CarFiled.PRODUCTION_YEAR)
+    @PropertyName(CarField.PRODUCTION_YEAR)
     private Integer productionYear;
-    @PropertyName(CarFiled.MILEAGE)
+    @PropertyName(CarField.MILEAGE)
     private List<Mileage> mileage;
 
     public String getId() {
         return id;
     }
 
-    @PropertyName(CarFiled.MARK)
+    @PropertyName(CarField.MARK)
     public String getMark() {
         return mark;
     }
 
-    @PropertyName(CarFiled.MODEL)
+    @PropertyName(CarField.MODEL)
     public String getModel() {
         return model;
     }
 
-    @PropertyName(CarFiled.GEAR)
+    @PropertyName(CarField.GEAR)
     public String getGear() {
         return gear;
     }
 
-    @PropertyName(CarFiled.BODY)
+    @PropertyName(CarField.BODY)
     public String getBody() {
         return body;
     }
 
-    @PropertyName(CarFiled.ENGINE_VOLUME)
+    @PropertyName(CarField.ENGINE_VOLUME)
     public Double getEngineVolume() {
         return engineVolume;
     }
 
-    @PropertyName(CarFiled.PRODUCTION_YEAR)
+    @PropertyName(CarField.PRODUCTION_YEAR)
     public Integer getProductionYear() {
         return productionYear;
     }
 
-    @PropertyName(CarFiled.MILEAGE)
+    @PropertyName(CarField.MILEAGE)
     public List<Mileage> getMileage() {
         return mileage;
     }
@@ -113,7 +111,7 @@ public class Car {
         return new Car(id, mark, model, gear, body, engineVolume, productionYear);
     }
 
-    public static final class CarFiled {
+    public static final class CarField {
         public final static String MARK = "mark";
         public final static String MODEL = "model";
         public final static String GEAR = "gear";
@@ -122,7 +120,7 @@ public class Car {
         public final static String PRODUCTION_YEAR = "production_year";
         public final static String MILEAGE = "mileage";
 
-        private CarFiled() {
+        private CarField() {
         }
     }
 }

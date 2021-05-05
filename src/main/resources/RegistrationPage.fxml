@@ -111,7 +111,7 @@
                                           </ComboBox>
                                        </children>
                                     </HBox>
-                                    <ComboBox fx:id="typeOfWorksBox" focusTraversable="false" prefWidth="150.0" GridPane.columnIndex="1" />
+                                    <ComboBox fx:id="typeOfWorksBox" focusTraversable="false" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
                                     <TextField fx:id="costField" focusTraversable="false" promptText="Введите стоимость работ" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                     <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                        <children>

@@ -1,33 +1,31 @@
 package eservice.business.core;
 
 import com.google.cloud.Timestamp;
-import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.cloud.firestore.annotation.PropertyName;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Client {
 
     @DocumentId
     private String id;
-    @PropertyName(ClientFiled.NAME)
+    @PropertyName(ClientField.NAME)
     private String name;
-    @PropertyName(ClientFiled.SURNAME)
+    @PropertyName(ClientField.SURNAME)
     private String surname;
-    @PropertyName(ClientFiled.PATRONYMIC)
+    @PropertyName(ClientField.PATRONYMIC)
     private String patronymic;
-    @PropertyName(ClientFiled.PHONE_NUMBER)
+    @PropertyName(ClientField.PHONE_NUMBER)
     private String phoneNumber;
-    @PropertyName(ClientFiled.EMAIL)
+    @PropertyName(ClientField.EMAIL)
     private String email;
-    @PropertyName(ClientFiled.DATE_OF_BIRTH)
+    @PropertyName(ClientField.DATE_OF_BIRTH)
     private Timestamp dateOfBirth;
     private List<Car> cars = new ArrayList<>();
     private List<Token> tokens = new ArrayList<>();
-    @PropertyName(ClientFiled.REGISTRATIONS)
+    @PropertyName(ClientField.REGISTRATIONS)
     private List<String> registrations;
 
     public Client(String id, String name, String surname, String patronymic,
@@ -61,32 +59,32 @@ public class Client {
         return id;
     }
 
-    @PropertyName(ClientFiled.NAME)
+    @PropertyName(ClientField.NAME)
     public String getName() {
         return name;
     }
 
-    @PropertyName(ClientFiled.SURNAME)
+    @PropertyName(ClientField.SURNAME)
     public String getSurname() {
         return surname;
     }
 
-    @PropertyName(ClientFiled.PATRONYMIC)
+    @PropertyName(ClientField.PATRONYMIC)
     public String getPatronymic() {
         return patronymic;
     }
 
-    @PropertyName(ClientFiled.PHONE_NUMBER)
+    @PropertyName(ClientField.PHONE_NUMBER)
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    @PropertyName(ClientFiled.EMAIL)
+    @PropertyName(ClientField.EMAIL)
     public String getEmail() {
         return email;
     }
 
-    @PropertyName(ClientFiled.DATE_OF_BIRTH)
+    @PropertyName(ClientField.DATE_OF_BIRTH)
     public Timestamp getDateOfBirth() {
         return dateOfBirth;
     }
@@ -169,7 +167,7 @@ public class Client {
     //        this.cars = cars;
 //    }
 
-    public static final class ClientFiled {
+    public static final class ClientField {
         public final static String NAME = "name";
         public final static String SURNAME = "surname";
         public final static String PATRONYMIC = "patronymic";
@@ -178,7 +176,7 @@ public class Client {
         public final static String DATE_OF_BIRTH = "date_of_birth";
         public final static String REGISTRATIONS = "registrations";
 
-        private ClientFiled() {
+        private ClientField() {
         }
 
     }
