@@ -423,7 +423,11 @@ public class RegistrationController implements ChangeListener<Registration> {
             costField.setText(oldCost);
         }
         try {
-            Double.parseDouble(newCost);
+            Double cost = Double.parseDouble(newCost);
+            if (cost < 0) {
+                costField.setText(oldCost);
+                return;
+            }
             checkChanges();
         } catch (NumberFormatException ex) {
             costField.setText(oldCost);
