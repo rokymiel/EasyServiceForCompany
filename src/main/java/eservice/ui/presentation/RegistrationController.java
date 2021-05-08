@@ -22,6 +22,7 @@ import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class RegistrationController implements ChangeListener<Registration> {
     private UpdatableRegistration updatableRegistration;
@@ -258,7 +259,8 @@ public class RegistrationController implements ChangeListener<Registration> {
     public void onNextClicked() {
         String newStatus = statusService.getNextStatus(status);
         updatableRegistration.setStatus(newStatus);
-        updatableRegistration.update();
+        updateStatus();
+
         Registration registration = updatableRegistration.getRegistration();
         if (registration == null) return;
         Client client = registration.getClient();
@@ -270,7 +272,8 @@ public class RegistrationController implements ChangeListener<Registration> {
     public void onPreviousClicked() {
         String newStatus = statusService.getPreviousStatus(status);
         updatableRegistration.setStatus(statusService.getPreviousStatus(status));
-        updatableRegistration.update();
+        updateStatus();
+
         Registration registration = updatableRegistration.getRegistration();
         if (registration == null) return;
         Client client = registration.getClient();
@@ -283,12 +286,20 @@ public class RegistrationController implements ChangeListener<Registration> {
     public void onCancelClicked() {
         String newStatus = statusService.getCancellationStatus(status);
         updatableRegistration.setStatus(statusService.getCancellationStatus(status));
-        updatableRegistration.update();
+        updateStatus();
+
         Registration registration = updatableRegistration.getRegistration();
         if (registration == null) return;
         Client client = registration.getClient();
         if (client == null) return;
         sendNotification(newStatus, registration, client);
+    }
+
+    private void updateStatus() {
+        nextButton.setVisible(false);
+        cancelButton.setVisible(false);
+        backButton.setVisible(false);
+        CompletableFuture.runAsync(() -> updatableRegistration.update());
     }
 
     private void sendNotification(Client client, String title, String body) {
@@ -307,7 +318,7 @@ public class RegistrationController implements ChangeListener<Registration> {
     }
 
     private void sendNotification(String newStatus, Registration registration, Client client) {
-        Platform.runLater(() -> {
+        CompletableFuture.runAsync(() -> {
             sendNotification(client, "Изменен статус записи", String.format(statusService.getMessageFormat(newStatus), simpleDateFormat.format(registration.getDateOfRegistration().toDate()), registration.getTypeOfWorks()));
         });
     }
@@ -541,9 +552,9 @@ public class RegistrationController implements ChangeListener<Registration> {
         Platform.runLater(() -> {
             sendNotification(client, "Изменены детали записи", String.format("Уведомляем вас, что произошли изменения в записи на %s", simpleDateFormat.format(registration.getDateOfRegistration().toDate())));
         });
-        updatableRegistration.update();
 
-
+        CompletableFuture.runAsync(() -> {
+            updatableRegistration.update();});
     }
 
     @FXML

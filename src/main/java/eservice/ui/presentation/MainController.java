@@ -80,18 +80,18 @@ public class MainController {
                         synchronized (locker) {
                             if (Objects.equals(up.getRegistration().getStatus(), "new")) {
                                 newRegistrations.add(up);
-                                up.getValue().addListener((observableValue, registration, newRegistration) -> {
-                                    synchronized (locker) {
-                                        if (!registration.getStatus().equals("new") && newRegistration.getStatus().equals("new")) {
-                                            newRegistrations.add(up);
-
-                                        } else if (registration.getStatus().equals("new") && !newRegistration.getStatus().equals("new")) {
-                                            newRegistrations.remove(up);
-
-                                        }
-                                    }
-                                });
                             }
+                            up.getValue().addListener((observableValue, registration, newRegistration) -> {
+                                synchronized (locker) {
+                                    if (!registration.getStatus().equals("new") && newRegistration.getStatus().equals("new")) {
+                                        newRegistrations.add(up);
+
+                                    } else if (registration.getStatus().equals("new") && !newRegistration.getStatus().equals("new")) {
+                                        newRegistrations.remove(up);
+
+                                    }
+                                }
+                            });
                         }
                     }
                 }));
