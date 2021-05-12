@@ -112,7 +112,7 @@ public class MainController {
                     this.setGraphic(null);
 
                     if (!empty) {
-                        this.setGraphic(createDriverGraphic(item));
+                        this.setGraphic(createRegistrationNode(item));
                     }
                 }
             };
@@ -173,7 +173,7 @@ public class MainController {
         });
     }
 
-    private Node createDriverGraphic(Registration registration) {
+    private Node createRegistrationNode(Registration registration) {
 
         GridPane gridpane = new GridPane();
         ColumnConstraints columnConstraints1 = new ColumnConstraints();

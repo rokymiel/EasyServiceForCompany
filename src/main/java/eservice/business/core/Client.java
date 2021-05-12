@@ -25,8 +25,6 @@ public class Client {
     private Timestamp dateOfBirth;
     private List<Car> cars = new ArrayList<>();
     private List<Token> tokens = new ArrayList<>();
-    @PropertyName(ClientField.REGISTRATIONS)
-    private List<String> registrations;
 
     public Client(String id, String name, String surname, String patronymic,
                   String phoneNumber) {
@@ -37,7 +35,7 @@ public class Client {
         this.phoneNumber = phoneNumber;
     }
 
-    private Client(String id, String name, String surname, String patronymic, String phoneNumber, String email, Timestamp dateOfBirth, List<Car> cars, List<Token> tokens, List<String> registrations) {
+    private Client(String id, String name, String surname, String patronymic, String phoneNumber, String email, Timestamp dateOfBirth, List<Car> cars, List<Token> tokens) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -46,7 +44,6 @@ public class Client {
         this.dateOfBirth = dateOfBirth;
         this.cars = cars;
         this.tokens = tokens;
-        this.registrations = registrations;
         this.email = email;
     }
 
@@ -86,9 +83,6 @@ public class Client {
         return dateOfBirth;
     }
 
-    public List<String> getRegistrations() {
-        return registrations;
-    }
 
     public List<Car> getCars() {
         return cars;
@@ -129,19 +123,6 @@ public class Client {
         this.cars = List.copyOf(cars);
     }
 
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", patronymic='" + patronymic + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", cars=" + cars +
-                ", registrations=" + registrations +
-                '}';
-    }
 
     public String getFullName() {
         List<String> fullName = new ArrayList<>(List.of(getSurname(), getName()));
@@ -153,7 +134,7 @@ public class Client {
 
     @Override
     public Object clone() {
-        return new Client(id, name, surname, patronymic, phoneNumber, email, dateOfBirth, cars, tokens, registrations);
+        return new Client(id, name, surname, patronymic, phoneNumber, email, dateOfBirth, cars, tokens);
     }
 
     public static final class ClientField {
@@ -163,7 +144,6 @@ public class Client {
         public final static String PHONE_NUMBER = "phone";
         public final static String EMAIL = "email";
         public final static String DATE_OF_BIRTH = "date_of_birth";
-        public final static String REGISTRATIONS = "registrations";
 
         private ClientField() {
         }

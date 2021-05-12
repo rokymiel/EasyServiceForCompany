@@ -23,10 +23,10 @@ public class ServiceRegistrationController {
     @FXML
     void initialize() {
         autoservicesService = new AutoservicesService();
-        codeTextField.textProperty().addListener(this::mileageFieldChanged);
+        codeTextField.textProperty().addListener(this::codeFieldChanged);
     }
 
-    private void mileageFieldChanged(ObservableValue<? extends String> observableValue, String oldCode, String newCode) {
+    private void codeFieldChanged(ObservableValue<? extends String> observableValue, String oldCode, String newCode) {
         if (newCode == null || newCode.isBlank()) {
             loginButton.setVisible(false);
             return;

@@ -164,23 +164,6 @@ public class Registration {
     }
 
     @Override
-    public String toString() {
-        return "Registration{" +
-                "id='" + id + '\'' +
-                ", clientId='" + clientId + '\'' +
-                ", carId='" + carId + '\'' +
-                ", dateOfCreation=" + dateOfCreation +
-                ", dateOfRegistration=" + dateOfRegistration +
-                ", description='" + description + '\'' +
-                ", typeOfWorks='" + typeOfWorks + '\'' +
-                ", cost=" + cost +
-                ", timeOfWorks=" + timeOfWorks +
-                ", status='" + status + '\'' +
-                ", notes='" + notes +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

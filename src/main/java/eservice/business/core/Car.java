@@ -69,15 +69,6 @@ public class Car {
     public Car() {
     }
 
-    private Car(String id, String mark, String model, String gear, String body, Double engineVolume, Integer productionYear) {
-        this.id = id;
-        this.mark = mark;
-        this.model = model;
-        this.gear = gear;
-        this.engineVolume = engineVolume;
-        this.productionYear = productionYear;
-        this.body = body;
-    }
 
     public Car(String id, String mark, String model, String gear, String body, Double engineVolume, Integer productionYear, List<Mileage> mileage) {
         this.id = id;
@@ -95,20 +86,8 @@ public class Car {
     }
 
     @Override
-    public String toString() {
-        return "Car{" +
-                "id='" + id + '\'' +
-                ", mark='" + mark + '\'' +
-                ", model='" + model + '\'' +
-                ", gear='" + gear + '\'' +
-                ", engineVolume=" + engineVolume +
-                ", productionYear=" + productionYear +
-                '}';
-    }
-
-    @Override
     public Object clone() {
-        return new Car(id, mark, model, gear, body, engineVolume, productionYear);
+        return new Car(id, mark, model, gear, body, engineVolume, productionYear, mileage);
     }
 
     public static final class CarField {
