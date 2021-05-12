@@ -11,6 +11,7 @@ import eservice.business.services.UpdatableRegistration;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -100,8 +101,9 @@ public class MainController {
         });
 
         newRegistrationsColumn.setCellValueFactory(cellData -> cellData.getValue().getValue());
-
-        newRegistrationsTable.setItems(newRegistrations);
+        Comparator<UpdatableRegistration> comparator = Comparator.comparing(x -> x.getRegistration().getDateOfCreation());
+        SortedList<UpdatableRegistration> sortedList = new SortedList<>(newRegistrations, comparator.reversed());
+        newRegistrationsTable.setItems(sortedList);
 
         newRegistrationsColumn.setCellFactory(col -> {
             TableCell<UpdatableRegistration, Registration> tableCell = new TableCell<>() {
@@ -124,7 +126,6 @@ public class MainController {
             });
             return tableCell;
         });
-        newRegistrationsColumn.setComparator(Comparator.comparing(Registration::getDateOfCreation).reversed());
 
         allRegistrationsTable.setRowFactory(tv -> {
             TableRow<UpdatableRegistration> row = new TableRow<>();
