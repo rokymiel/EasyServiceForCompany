@@ -25,7 +25,6 @@ public class StatusService {
             case "new":
                 return "Отклонить";
             case "accepted":
-            case "in_progress":
                 return "Отменить";
         }
         return null;
@@ -55,7 +54,6 @@ public class StatusService {
             case "new":
                 return "denied";
             case "accepted":
-            case "in_progress":
                 return "canceled";
         }
         return null;
